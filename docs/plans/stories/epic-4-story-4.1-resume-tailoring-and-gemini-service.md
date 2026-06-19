@@ -1,5 +1,6 @@
 # Story 4.1: Resume tailoring and Gemini service
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/requirements.md` - Resume tailoring requirements

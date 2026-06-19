@@ -1,5 +1,6 @@
 # Story 3.4: Scheduled discovery integration test
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/architecture/design/00-system-architecture-greenfield.md` - Background operations

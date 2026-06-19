@@ -1,5 +1,6 @@
 # Story 1.3: Database and storage bootstrap
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/requirements.md` - Approved database tech constraints

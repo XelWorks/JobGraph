@@ -1,5 +1,6 @@
 # Story 5.2: Question answering and application modes
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/requirements.md` - Form submission execution modes (Manual, Assisted, Autonomous)

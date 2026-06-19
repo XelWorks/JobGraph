@@ -1,5 +1,6 @@
 # Story 5.4: End-to-end application flow test
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/architecture/design/00-system-architecture-greenfield.md` - Verification

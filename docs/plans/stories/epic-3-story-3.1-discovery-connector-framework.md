@@ -1,5 +1,6 @@
 # Story 3.1: Discovery connector framework
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/requirements.md` - Greenhouse and Lever integration requirements

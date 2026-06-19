@@ -1,5 +1,6 @@
 # Story 1.4: Shell-to-service health wiring
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/architecture/design/00-system-architecture-greenfield.md` - Web connectivity

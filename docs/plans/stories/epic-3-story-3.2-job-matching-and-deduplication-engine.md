@@ -1,5 +1,6 @@
 # Story 3.2: Job matching and deduplication engine
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/requirements.md` - Job Matching & Scoring Engine rules

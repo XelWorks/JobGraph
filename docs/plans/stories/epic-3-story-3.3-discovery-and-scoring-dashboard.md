@@ -1,5 +1,6 @@
 # Story 3.3: Discovery and scoring dashboard
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/requirements.md` - Discovered Jobs Feed page

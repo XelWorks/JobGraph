@@ -1,5 +1,6 @@
 # Story 2.1: Authentication API and password hashing
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/requirements.md` - Secure password hashing using Argon2

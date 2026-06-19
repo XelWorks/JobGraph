@@ -1,5 +1,6 @@
 # Story 2.4: Auth/profile integration test
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/architecture/design/00-system-architecture-greenfield.md` - Layer verification

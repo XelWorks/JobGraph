@@ -1,5 +1,6 @@
 # Story 5.1: Application execution browser core
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/requirements.md` - Playwright automation requirements

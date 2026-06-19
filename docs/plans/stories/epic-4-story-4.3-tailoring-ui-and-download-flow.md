@@ -1,5 +1,6 @@
 # Story 4.3: Tailoring UI and download flow
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/requirements.md` - PDF/Document download options

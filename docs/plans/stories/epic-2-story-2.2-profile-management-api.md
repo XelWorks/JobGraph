@@ -1,5 +1,6 @@
 # Story 2.2: Profile management API
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/requirements.md` - Profile configuration details and resume storage

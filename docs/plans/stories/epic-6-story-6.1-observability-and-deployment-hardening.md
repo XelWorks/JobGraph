@@ -1,5 +1,6 @@
 # Story 6.1: Observability and deployment hardening
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/requirements.md` - Production-Ready MVP target

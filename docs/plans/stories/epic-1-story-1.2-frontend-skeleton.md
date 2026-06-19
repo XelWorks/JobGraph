@@ -1,5 +1,6 @@
 # Story 1.2: Frontend skeleton
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/requirements.md` - Approved requirements

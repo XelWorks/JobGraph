@@ -1,5 +1,6 @@
 # Story 5.3: Tracking and reporting UI
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/requirements.md` - Application tracking records

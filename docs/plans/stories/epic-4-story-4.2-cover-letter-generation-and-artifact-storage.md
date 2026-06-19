@@ -1,5 +1,6 @@
 # Story 4.2: Cover letter generation and artifact storage
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/requirements.md` - Cover letter requirements and storage constraints

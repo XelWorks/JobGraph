@@ -1,5 +1,6 @@
 # Story 1.0: Root tooling seed
 
+**Developer**: Dev 1
 
 **Must Read**:
 - `docs/requirements.md` - Approved product requirements

@@ -1,5 +1,6 @@
 # Story 2.3: Auth and profile UI
 
+**Developer**: Dev 2
 
 **Must Read**:
 - `docs/requirements.md` - Next.js dashboard expectations
