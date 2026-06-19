@@ -1,3 +1,14 @@
+---
+story-id: epic-1-story-1.1-backend-skeleton
+epic: Epic-1
+cycle: N/A
+status: done
+superseded-by:
+  - CR-1.1
+last-audit:
+  date: "2026-06-19"
+  result: pass
+---
 # Story 1.1: Backend skeleton
 
 **Developer**: Dev 1

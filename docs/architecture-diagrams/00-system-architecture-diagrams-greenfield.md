@@ -12,7 +12,7 @@
 ```mermaid
 ┌───────────────────────────────────────────────────────────────┐
 │                    INFRASTRUCTURE LAYER                       │
-│  (Next.js Web UI, FastAPI Routers, Playwright, DB Migrations) │
+│  (React JS Web UI, FastAPI Routers, Playwright, DB Migrations) │
 │  ┌─────────────────────────────────────────────────────────┐  │
 │  │                  APPLICATION LAYER                       │  │
 │  │    (LangGraph Agents, Connectors, Use Cases, Services)   │  │
@@ -53,7 +53,7 @@ C4Context
 
 ```mermaid
 flowchart TB
-  subgraph Frontend [Next.js Dashboard - Client & SSR]
+  subgraph Frontend [React JS Dashboard - Client SPA]
     UI[React App - UI Components]
     Store[Context / State Store]
     Proxy[API Proxy Handler]

@@ -13,12 +13,12 @@
 AutoApply AI is a modern, self-hosted, privacy-first job application automation system. It utilizes high-fidelity multi-agent orchestration via **LangGraph**, **Gemini LLM**, and headless browser automation to automatically discover, score, customize, and submit job applications to various ATS platforms (Greenhouse and Lever in v0.1).
 
 ### Architecture Style
-The system is built on **Clean Architecture** principles, separating the core domain and business logic from the infrastructure (Next.js, FastAPI, PostgreSQL, Valkey, MinIO, and Browser Automation/Playwright).
+The system is built on **Clean Architecture** principles, separating the core domain and business logic from the infrastructure (React JS, FastAPI, PostgreSQL, Valkey, MinIO, and Browser Automation/Playwright).
 
 ```
 ┌───────────────────────────────────────────────────────────────┐
 │                    INFRASTRUCTURE LAYER                       │
-│  (Next.js Web UI, FastAPI Routers, Playwright, DB Migrations) │
+│  (React JS Web UI, FastAPI Routers, Playwright, DB Migrations) │
 │  ┌─────────────────────────────────────────────────────────┐  │
 │  │                  APPLICATION LAYER                       │  │
 │  │    (LangGraph Agents, Connectors, Use Cases, Services)   │  │
@@ -43,7 +43,7 @@ The system is built on **Clean Architecture** principles, separating the core do
 
 | Category | Technology | Version | Justification |
 |----------|------------|---------|---------------|
-| Frontend | Next.js / React / TailwindCSS | 14.x | Fast, modern dashboard with Server-Side rendering and high-fidelity components. |
+| Frontend | React JS / TailwindCSS | 18.x | Fast, modern client-side Single Page Application (SPA) dashboard with dynamic components. |
 | Backend | FastAPI | 0.110.x | Ultra-fast, asynchronous Python backend with automatic OpenAPI documentation. |
 | Agent Orchestrator | LangGraph | 0.0.x | STATEFUL multi-agent workflow runtime for coordinating Discovery, Matching, Tailoring, and Submission. |
 | Primary LLM | Google Gemini (Gemini API) | 1.5 Pro/Flash | Powerful, cost-effective LLM with massive context window for reading resumes and JDs. |
@@ -80,7 +80,7 @@ C4Context
 
 ```mermaid
 flowchart TB
-  subgraph Frontend [Next.js Dashboard - Client & SSR]
+  subgraph Frontend [React JS Dashboard - Client SPA]
     UI[React App - UI Components]
     Store[Context / State Store]
     Proxy[API Proxy Handler]
@@ -310,4 +310,4 @@ All endpoints must respond in structured JSON format. Authenticated requests use
 - **Context**: Candidates require a simple, low-overhead platform to protect their sensitive personal profiles and credentials.
 - **Alternatives Considered**: Kubernetes (K8s) deployment, hosted Cloud SaaS.
 - **Decision**: Single-command **Docker Compose** deployment.
-- **Rationale**: Eliminates multi-tenant exposure risks. Fits local machines and low-cost $5 VPS nodes perfectly, running FastAPI, Next.js, Postgres, Valkey, and MinIO locally in lightweight sandboxed environments.
+- **Rationale**: Eliminates multi-tenant exposure risks. Fits local machines and low-cost $5 VPS nodes perfectly, running FastAPI, React JS, Postgres, Valkey, and MinIO locally in lightweight sandboxed environments.

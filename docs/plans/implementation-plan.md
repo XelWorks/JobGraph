@@ -130,7 +130,7 @@ Create the FastAPI application shell, health endpoint, and app bootstrap wiring.
  
 ### Story 1.2: Frontend skeleton
 **Developer**: Dev 2  
-Create the Next.js application shell, root layout, and initial dashboard frame.
+Create the React JS application shell, root layout, and initial dashboard frame.
  
 ### Story 1.3: Database and storage bootstrap
 **Developer**: Dev 1  

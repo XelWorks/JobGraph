@@ -24,7 +24,7 @@ Create the dashboard view containing the feed of matched jobs. Users must be abl
 - UI specs, visual indicators, dynamic lists
 
 **Implementation Steps**:
-1. Create feed pages and sub-components inside `frontend/features/jobs/`.
+1. Create feed pages and sub-components inside `frontend/src/features/jobs/`.
 2. Connect client pages to API routes.
 3. Implement score filters and sorting select boxes.
 
@@ -39,4 +39,24 @@ Create the dashboard view containing the feed of matched jobs. Users must be abl
 - Real application execution triggers (handled in Epic 5).
 
 **Completion Evidence**:
-- Next.js rendering verification logs.
+- React JS rendering verification logs.
+
+---
+
+## Change log
+
+### 2026-06-19 — Updated for technical-constraints@v1.1
+
+**Trigger:** drift run; entry-mode 2A plain-English.
+**Pre-edit status:** planned   ← R14(b) carve-out
+
+**Sections modified:**
+- `## Completion Evidence` — Updated verification log description to React JS.
+
+**Delta:**
+
+| Aspect | Before | After |
+| :-- | :-- | :-- |
+| Completion Evidence | Next.js logs | React JS logs |
+
+**Reason no CR was drafted:** foundation story was `status: planned` at edit time (R14(b) carve-out — no shipped or in-flight code to preserve).

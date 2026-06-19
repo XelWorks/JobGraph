@@ -65,7 +65,7 @@ Job seekers spend 2-4 hours daily searching multiple platforms, reading repetiti
 
 | Constraint | Value | Rationale |
 |------------|-------|-----------|
-| Frontend Framework | Next.js Dashboard | Modern, fast, SEO-friendly UI/UX and robust Server-Side Rendering. |
+| Frontend Framework | React JS | Modern, responsive, and dynamic client-side SPA Dashboard. |
 | Backend Framework | FastAPI | Async Python framework optimized for high-performance and seamless AI integration. |
 | Database | PostgreSQL | Relational database for structured, ACID-compliant user profiles and application tracking. |
 | Cache & Message Broker | Valkey | High-performance open-source in-memory data store for queues, rate-limits, and session caching. |
@@ -182,7 +182,7 @@ Job seekers spend 2-4 hours daily searching multiple platforms, reading repetiti
 ### IN Scope ✅
 - Multi-Agent Orchestration using LangGraph.
 - Integration with Google Gemini LLM API.
-- Fully-featured Next.js Dashboard UI.
+- Fully-featured React JS Dashboard UI.
 - FastAPI backend communicating with PostgreSQL, Valkey, and MinIO.
 - Connectors for Greenhouse and Lever ATS platforms.
 - Automated resume tailoring and custom cover letter generation (outputs stored in MinIO).
@@ -228,7 +228,7 @@ Job seekers spend 2-4 hours daily searching multiple platforms, reading repetiti
 |-----------|------|--------------|
 | Requirements Complete | 2026-06-19 | This document (`docs/requirements.md`) |
 | Architecture Complete | 2026-06-21 | System architecture design & patterns |
-| Implementation Complete | 2026-07-15 | High-test-coverage Next.js & FastAPI code |
+| Implementation Complete | 2026-07-15 | High-test-coverage React JS & FastAPI code |
 | Unit test Validation | 2026-07-20 | Coverage reports showing ≥85% coverage |
 | Release | 2026-07-31 | Docker-composed fully stable local release |
 

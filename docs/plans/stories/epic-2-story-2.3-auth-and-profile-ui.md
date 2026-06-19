@@ -3,7 +3,7 @@
 **Developer**: Dev 2
 
 **Must Read**:
-- `docs/requirements.md` - Next.js dashboard expectations
+- `docs/requirements.md` - React JS dashboard expectations
 
 **Description**:
 Create user forms for authentication (Login/Register) and the main Profile page where the candidate configures experience, uploads resumes, and configures salary preferences.
@@ -21,12 +21,12 @@ Create user forms for authentication (Login/Register) and the main Profile page 
 - `docs/architecture/design/01-patterns-and-standards-greenfield.md`
 
 **Patterns to Follow**:
-- Next.js page layouts and forms with clean UX styling.
+- React JS page layouts and forms with clean UX styling.
 
 **Implementation Steps**:
-1. Create Login and Register components in `frontend/features/auth/`.
-2. Create profile forms and file upload wrapper in `frontend/features/profiles/`.
-3. Route pages in `frontend/app/login/` and `frontend/app/profile/`.
+1. Create Login and Register components in `frontend/src/features/auth/`.
+2. Create profile forms and file upload wrapper in `frontend/src/features/profiles/`.
+3. Setup routing for `/login` and `/profile` pages.
 
 **Test Requirements**:
 - Mocking backend API checks client submission states.
@@ -40,3 +40,25 @@ Create user forms for authentication (Login/Register) and the main Profile page 
 
 **Completion Evidence**:
 - Local frontend compilation logs and verified form displays.
+
+---
+
+## Change log
+
+### 2026-06-19 — Updated for technical-constraints@v1.1
+
+**Trigger:** drift run; entry-mode 2A plain-English.
+**Pre-edit status:** planned   ← R14(b) carve-out
+
+**Sections modified:**
+- `## Must Read` — Updated reference expectations to React JS.
+- `## Patterns to Follow` — Updated page layout references.
+- `## Implementation Steps` — Refactored routing step.
+
+**Delta:**
+
+| Aspect | Before | After |
+| :-- | :-- | :-- |
+| Page Routing | File-system routing (`frontend/app/`) | Client-side routing (`react-router-dom`) |
+
+**Reason no CR was drafted:** foundation story was `status: planned` at edit time (R14(b) carve-out — no shipped or in-flight code to preserve).
