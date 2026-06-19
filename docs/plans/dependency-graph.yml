@@ -2,11 +2,10 @@ version: 1
 generated_by: AIRE_PRODUCT_OWNER
 generated_at: 2026-06-19
 team_size: 1
-
 shared_files:
   - package.json
-  - backend/pyproject.toml
   - frontend/package.json
+  - backend/pyproject.toml
   - tsconfig.base.json
   - .eslintrc.cjs
   - .prettierrc
@@ -14,27 +13,19 @@ shared_files:
   - .env.example
   - README.md
   - docker-compose.yml
-  - Dockerfile
   - backend/app/main.py
-  - backend/app/api/__init__.py
   - backend/app/core/config.py
-  - backend/app/infrastructure/db/session.py
-  - backend/app/infrastructure/storage/minio.py
-  - backend/app/infrastructure/logging/logger.py
-  - frontend/app/layout.tsx
-  - frontend/app/page.tsx
-  - backend/migrations/
-
+  - backend/app/api/__init__.py
 stories:
-  - id: 1.0
-    title: Root tooling seed
+  - id: "1.0"
+    title: "Root tooling seed"
     epic: 1
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 1
     requires: []
-    enables: [1.1, 1.2, 1.3]
+    enables: ["1.1", "1.2", "1.3"]
     files_touched:
       - package.json
       - backend/pyproject.toml
@@ -47,356 +38,291 @@ stories:
       - README.md
       - docker-compose.yml
 
-  - id: 1.1
-    title: Backend skeleton
+  - id: "1.1"
+    title: "Backend skeleton"
     epic: 1
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 2
-    requires: [1.0]
-    enables: [1.4, 2.1, 3.1, 6.1]
+    requires: ["1.0"]
+    enables: ["1.4", "2.1", "3.1", "6.1"]
     files_touched:
       - backend/app/main.py
-      - backend/app/api/__init__.py
       - backend/app/core/config.py
-      - backend/app/api/health.py
-      - backend/tests/test_health.py
+      - backend/app/api/__init__.py
 
-  - id: 1.2
-    title: Frontend skeleton
+  - id: "1.2"
+    title: "Frontend skeleton"
+    epic: 1
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 2
+    requires: ["1.0"]
+    enables: ["1.4", "2.3", "3.3", "4.3", "5.3", "6.1"]
+    files_touched:
+      - frontend/package.json
+      - frontend/tsconfig.json
+      - frontend/app/page.tsx
+      - frontend/app/layout.tsx
+
+  - id: "1.3"
+    title: "Database and storage bootstrap"
+    epic: 1
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 2
+    requires: ["1.0"]
+    enables: ["1.4", "2.1", "3.1", "4.1", "4.2", "5.1", "6.1"]
+    files_touched:
+      - backend/app/infrastructure/db/session.py
+      - backend/app/infrastructure/storage/minio.py
+
+  - id: "1.4"
+    title: "Shell-to-service health wiring"
     epic: 1
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 3
-    requires: [1.0]
-    enables: [1.4, 2.3, 3.3, 4.3, 5.3, 6.1]
+    requires: ["1.1", "1.2", "1.3"]
+    enables: []
     files_touched:
-      - frontend/app/layout.tsx
+      - frontend/components/HealthCheck.tsx
       - frontend/app/page.tsx
-      - frontend/app/globals.css
-      - frontend/components/shell/AppShell.tsx
-      - frontend/tests/app-shell.test.tsx
 
-  - id: 1.3
-    title: Database and storage bootstrap
-    epic: 1
+  - id: "2.1"
+    title: "Authentication API and password hashing"
+    epic: 2
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 3
+    requires: ["1.1", "1.3"]
+    enables: ["2.2", "2.4"]
+    files_touched:
+      - backend/app/api/auth.py
+      - backend/app/services/auth.py
+      - backend/app/domain/auth.py
+
+  - id: "2.2"
+    title: "Profile management API"
+    epic: 2
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 4
-    requires: [1.0]
-    enables: [1.4, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1, 5.2, 5.3, 6.1]
+    requires: ["2.1"]
+    enables: ["2.3", "2.4", "3.2", "4.1", "5.2"]
     files_touched:
-      - backend/app/infrastructure/db/session.py
-      - backend/app/infrastructure/storage/minio.py
-      - backend/migrations/
-      - backend/tests/test_db_bootstrap.py
+      - backend/app/api/profiles.py
+      - backend/app/services/profiles.py
 
-  - id: 1.4
-    title: Shell-to-service health wiring
-    epic: 1
+  - id: "2.3"
+    title: "Auth and profile UI"
+    epic: 2
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 5
-    requires: [1.1, 1.2, 1.3]
-    enables: [2.1, 3.1, 4.1, 5.1, 6.1]
+    requires: ["2.2", "1.2"]
+    enables: ["2.4"]
     files_touched:
-      - backend/app/main.py
-      - frontend/app/page.tsx
-      - frontend/tests/health-status.test.tsx
+      - frontend/features/auth/LoginForm.tsx
+      - frontend/features/profiles/ProfileForm.tsx
 
-  - id: 2.1
-    title: Authentication API and password hashing
+  - id: "2.4"
+    title: "Auth/profile integration test"
     epic: 2
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 6
-    requires: [1.1, 1.3]
-    enables: [2.2, 2.3]
+    requires: ["2.1", "2.2", "2.3"]
+    enables: []
     files_touched:
-      - backend/app/api/auth.py
-      - backend/app/services/auth.py
-      - backend/app/domain/auth.py
-      - backend/tests/test_auth_api.py
+      - backend/tests/integration/test_auth_profile.py
 
-  - id: 2.2
-    title: Profile management API
-    epic: 2
+  - id: "3.1"
+    title: "Discovery connector framework"
+    epic: 3
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 3
+    requires: ["1.1", "1.3"]
+    enables: ["3.2", "3.4"]
+    files_touched:
+      - backend/app/services/discovery/connector.py
+      - workers/jobs/discovery/scheduler.py
+
+  - id: "3.2"
+    title: "Job matching and deduplication engine"
+    epic: 3
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 5
+    requires: ["3.1", "2.2"]
+    enables: ["3.3", "3.4", "4.1"]
+    files_touched:
+      - backend/app/services/matching/scoring.py
+
+  - id: "3.3"
+    title: "Discovery and scoring dashboard"
+    epic: 3
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 6
+    requires: ["1.2", "3.2"]
+    enables: ["3.4"]
+    files_touched:
+      - frontend/features/jobs/JobsDashboard.tsx
+
+  - id: "3.4"
+    title: "Scheduled discovery integration test"
+    epic: 3
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 7
-    requires: [2.1, 1.3]
-    enables: [2.3, 3.2, 4.1, 5.2]
+    requires: ["3.1", "3.2", "3.3"]
+    enables: []
     files_touched:
-      - backend/app/api/profiles.py
-      - backend/app/services/profiles.py
-      - backend/app/domain/profiles.py
-      - backend/tests/test_profile_api.py
+      - backend/tests/integration/test_discovery.py
 
-  - id: 2.3
-    title: Auth and profile UI
-    epic: 2
+  - id: "4.1"
+    title: "Resume tailoring and Gemini service"
+    epic: 4
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 6
+    requires: ["3.2", "2.2", "1.3"]
+    enables: ["4.2", "4.3", "4.4", "5.1"]
+    files_touched:
+      - backend/app/services/tailoring/gemini.py
+
+  - id: "4.2"
+    title: "Cover letter generation and artifact storage"
+    epic: 4
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 7
+    requires: ["4.1", "1.3"]
+    enables: ["4.3", "4.4", "5.1"]
+    files_touched:
+      - backend/app/infrastructure/storage/artifacts.py
+
+  - id: "4.3"
+    title: "Tailoring UI and download flow"
+    epic: 4
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 8
-    requires: [1.2, 2.1, 2.2]
-    enables: [2.4, 3.3, 4.3, 5.3]
+    requires: ["1.2", "4.1", "4.2"]
+    enables: ["4.4"]
     files_touched:
-      - frontend/app/login/page.tsx
-      - frontend/app/profile/page.tsx
-      - frontend/features/auth/login-form.tsx
-      - frontend/features/profile/profile-form.tsx
-      - frontend/tests/auth-profile-ui.test.tsx
+      - frontend/features/tailoring/TailorPanel.tsx
 
-  - id: 2.4
-    title: Auth/profile integration test
-    epic: 2
+  - id: "4.4"
+    title: "Tailoring integration test"
+    epic: 4
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 9
-    requires: [2.1, 2.2, 2.3]
-    enables: [3.1, 3.2, 4.1, 5.1]
+    requires: ["4.1", "4.2", "4.3"]
+    enables: []
     files_touched:
-      - backend/tests/test_auth_profile_integration.py
-      - frontend/tests/auth-profile.e2e.ts
+      - backend/tests/integration/test_tailoring.py
 
-  - id: 3.1
-    title: Discovery connector framework
-    epic: 3
+  - id: "5.1"
+    title: "Application execution browser core"
+    epic: 5
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 8
+    requires: ["4.1", "4.2", "1.3"]
+    enables: ["5.2", "5.3", "5.4"]
+    files_touched:
+      - backend/app/infrastructure/browser/playwright_client.py
+
+  - id: "5.2"
+    title: "Question answering and application modes"
+    epic: 5
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    wave: 9
+    requires: ["5.1", "2.2"]
+    enables: ["5.3", "5.4"]
+    files_touched:
+      - backend/app/services/applications/qa_agent.py
+
+  - id: "5.3"
+    title: "Tracking and reporting UI"
+    epic: 5
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 10
-    requires: [1.1, 1.3]
-    enables: [3.2, 3.3, 3.4]
+    requires: ["1.2", "5.1", "5.2"]
+    enables: ["5.4"]
     files_touched:
-      - backend/app/services/discovery.py
-      - backend/app/infrastructure/connectors/greenhouse/client.py
-      - backend/app/infrastructure/connectors/lever/client.py
-      - backend/tests/test_discovery_connectors.py
+      - frontend/features/applications/TrackingTable.tsx
 
-  - id: 3.2
-    title: Job matching and deduplication engine
-    epic: 3
+  - id: "5.4"
+    title: "End-to-end application flow test"
+    epic: 5
     jira: LOCAL
     github: null
     azure_devops: null
     wave: 11
-    requires: [3.1, 2.2]
-    enables: [3.3, 3.4, 4.1, 5.1]
+    requires: ["5.1", "5.2", "5.3"]
+    enables: []
     files_touched:
-      - backend/app/services/matching.py
-      - backend/app/domain/matching.py
-      - backend/tests/test_matching_service.py
+      - backend/tests/integration/test_application_flow.py
 
-  - id: 3.3
-    title: Discovery and scoring dashboard
-    epic: 3
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 12
-    requires: [1.2, 3.2]
-    enables: [3.4, 4.3, 5.3]
-    files_touched:
-      - frontend/app/jobs/page.tsx
-      - frontend/features/jobs/job-list.tsx
-      - frontend/features/jobs/match-score-badge.tsx
-      - frontend/tests/jobs-dashboard.test.tsx
-
-  - id: 3.4
-    title: Scheduled discovery integration test
-    epic: 3
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 13
-    requires: [3.1, 3.2, 3.3]
-    enables: [4.1, 5.1]
-    files_touched:
-      - workers/jobs/discovery/scheduled_discovery.py
-      - backend/tests/test_discovery_scheduler.py
-
-  - id: 4.1
-    title: Resume tailoring and Gemini service
-    epic: 4
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 14
-    requires: [3.2, 2.2, 1.3]
-    enables: [4.2, 4.3, 4.4, 5.1]
-    files_touched:
-      - backend/app/services/tailoring.py
-      - backend/app/infrastructure/llm/gemini_client.py
-      - backend/tests/test_tailoring_service.py
-
-  - id: 4.2
-    title: Cover letter generation and artifact storage
-    epic: 4
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 15
-    requires: [4.1, 1.3]
-    enables: [4.3, 4.4, 5.1]
-    files_touched:
-      - backend/app/services/tailoring.py
-      - backend/app/infrastructure/storage/minio.py
-      - backend/tests/test_cover_letter_generation.py
-
-  - id: 4.3
-    title: Tailoring UI and download flow
-    epic: 4
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 16
-    requires: [1.2, 4.1, 4.2]
-    enables: [4.4, 5.3]
-    files_touched:
-      - frontend/app/tailor/page.tsx
-      - frontend/features/tailoring/tailoring-panel.tsx
-      - frontend/features/tailoring/document-download.tsx
-      - frontend/tests/tailoring-ui.test.tsx
-
-  - id: 4.4
-    title: Tailoring integration test
-    epic: 4
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 17
-    requires: [4.1, 4.2, 4.3]
-    enables: [5.1, 5.2]
-    files_touched:
-      - backend/tests/test_tailoring_integration.py
-      - frontend/tests/tailoring.e2e.ts
-
-  - id: 5.1
-    title: Application execution browser core
-    epic: 5
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 18
-    requires: [4.1, 4.2, 1.3]
-    enables: [5.2, 5.3, 5.4]
-    files_touched:
-      - backend/app/services/applications.py
-      - backend/app/infrastructure/browser/playwright_client.py
-      - workers/jobs/apply/submit_application.py
-      - backend/tests/test_application_execution.py
-
-  - id: 5.2
-    title: Question answering and application modes
-    epic: 5
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 19
-    requires: [5.1, 2.2]
-    enables: [5.3, 5.4]
-    files_touched:
-      - backend/app/services/question_answering.py
-      - backend/app/services/applications.py
-      - backend/tests/test_question_answering.py
-
-  - id: 5.3
-    title: Tracking and reporting UI
-    epic: 5
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 20
-    requires: [1.2, 5.1, 5.2]
-    enables: [5.4, 6.1]
-    files_touched:
-      - backend/app/services/reporting.py
-      - backend/app/api/reports.py
-      - frontend/app/applications/page.tsx
-      - frontend/features/reports/report-cards.tsx
-      - frontend/tests/reporting-ui.test.tsx
-
-  - id: 5.4
-    title: End-to-end application flow test
-    epic: 5
-    jira: LOCAL
-    github: null
-    azure_devops: null
-    wave: 21
-    requires: [5.1, 5.2, 5.3]
-    enables: [6.1]
-    files_touched:
-      - backend/tests/test_application_e2e.py
-      - frontend/tests/application-flow.e2e.ts
-
-  - id: 6.1
-    title: Observability and deployment hardening
+  - id: "6.1"
+    title: "Observability and deployment hardening"
     epic: 6
     jira: LOCAL
     github: null
     azure_devops: null
-    wave: 22
-    requires: [1.1, 1.2, 1.3]
+    wave: 3
+    requires: ["1.1", "1.2", "1.3"]
     enables: []
     files_touched:
       - backend/app/infrastructure/logging/logger.py
-      - backend/app/infrastructure/metrics/metrics.py
       - docker-compose.yml
-      - Dockerfile
-      - backend/tests/test_observability.py
-      - backend/tests/test_docker_smoke.py
 
 waves:
   - wave: 1
-    stories: [1.0]
+    stories: ["1.0"]
   - wave: 2
-    stories: [1.1]
+    stories: ["1.1", "1.2", "1.3"]
   - wave: 3
-    stories: [1.2]
+    stories: ["1.4", "2.1", "3.1", "6.1"]
   - wave: 4
-    stories: [1.3]
+    stories: ["2.2"]
   - wave: 5
-    stories: [1.4]
+    stories: ["2.3", "3.2"]
   - wave: 6
-    stories: [2.1]
+    stories: ["2.4", "3.3", "4.1"]
   - wave: 7
-    stories: [2.2]
+    stories: ["3.4", "4.2"]
   - wave: 8
-    stories: [2.3]
+    stories: ["4.3", "5.1"]
   - wave: 9
-    stories: [2.4]
+    stories: ["4.4", "5.2"]
   - wave: 10
-    stories: [3.1]
+    stories: ["5.3"]
   - wave: 11
-    stories: [3.2]
-  - wave: 12
-    stories: [3.3]
-  - wave: 13
-    stories: [3.4]
-  - wave: 14
-    stories: [4.1]
-  - wave: 15
-    stories: [4.2]
-  - wave: 16
-    stories: [4.3]
-  - wave: 17
-    stories: [4.4]
-  - wave: 18
-    stories: [5.1]
-  - wave: 19
-    stories: [5.2]
-  - wave: 20
-    stories: [5.3]
-  - wave: 21
-    stories: [5.4]
-  - wave: 22
-    stories: [6.1]
+    stories: ["5.4"]

@@ -1,20 +1,5 @@
 # Story 1.0: Root tooling seed
 
-**BUILDID**: LOCAL | **Epic**: 1 - FOUNDATION | **ID**: 1.0 | **Date**: 2026-06-19 | **Jira**: LOCAL | **GitHub**: LOCAL | **AzureDevOps**: LOCAL
-**Wave**: 1
-**Requires**: []
-**Enables**: [1.1, 1.2, 1.3]
-**Files Touched**:
-  - package.json
-  - backend/pyproject.toml
-  - frontend/package.json
-  - tsconfig.base.json
-  - .eslintrc.cjs
-  - .prettierrc
-  - .gitignore
-  - .env.example
-  - README.md
-  - docker-compose.yml
 
 **Must Read**:
 - `docs/requirements.md` - Approved product requirements

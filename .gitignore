@@ -5,4 +5,6 @@ SPEC/
 .github/agents/
 .github/instructions/
 .github/copilot-instructions.md
+.agent/
+
 # === end AIRE SDLC Agentic Framework ===
