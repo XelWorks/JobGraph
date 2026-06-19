@@ -1,7 +1,7 @@
 # JobGraph - Open-Source AI Job Automation Platform
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/jobgraph/jobgraph?style=social)](https://github.com/jobgraph/jobgraph)
+[![GitHub Stars](https://img.shields.io/github/stars/XelWorks/JobGraph?style=social)](https://github.com/XelWorks/JobGraph)
 [![Discord](https://img.shields.io/discord/COMMUNITY_ID?label=Discord&logo=discord)](https://discord.gg/jobgraph)
 
 ## What is JobGraph?
@@ -44,7 +44,7 @@ Users are **responsible for complying with the Terms of Service** of websites th
 
 ```bash
 # Clone repository
-git clone https://github.com/jobgraph/jobgraph.git
+git clone https://github.com/XelWorks/JobGraph.git
 cd jobgraph
 
 # Create configuration
@@ -173,8 +173,8 @@ We welcome contributions!
 
 ### Community
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/jobgraph/jobgraph/issues)
-- **GitHub Discussions**: [Ask questions and discuss ideas](https://github.com/jobgraph/jobgraph/discussions)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/XelWorks/JobGraph/issues)
+- **GitHub Discussions**: [Ask questions and discuss ideas](https://github.com/XelWorks/JobGraph/discussions)
 - **Discord** (Coming Soon): Real-time chat and support
 - **Email**: community@jobgraph.dev
 
@@ -339,4 +339,4 @@ See [LICENSE](LICENSE) for full text.
 
 **Made with ❤️ by the JobGraph Community**
 
-[⭐ Star on GitHub](https://github.com/jobgraph/jobgraph) | [💬 Join Discord](https://discord.gg/jobgraph) | [📧 Contact us](mailto:community@jobgraph.dev)
+[⭐ Star on GitHub](https://github.com/XelWorks/JobGraph) | [💬 Join Discord](https://discord.gg/jobgraph) | [📧 Contact us](mailto:community@jobgraph.dev)

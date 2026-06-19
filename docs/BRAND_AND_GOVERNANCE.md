@@ -8,7 +8,7 @@ Protect the JobGraph® brand while keeping the core platform open source. This d
 
 ### Primary Repository
 
-- **GitHub**: `github.com/jobgraph/jobgraph`
+- **GitHub**: `github.com/XelWorks/JobGraph`
 - **Docker Hub**: `jobgraph/jobgraph`
 - **Description**: Core platform with API, agents, and base connectors
 

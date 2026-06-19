@@ -17,8 +17,8 @@ Thank you for your interest in contributing to JobGraph! This document provides 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/jobgraph.git
-   cd jobgraph
+   git clone https://github.com/XelWorks/JobGraph.git
+   cd JobGraph
    ```
 
 3. **Create a feature branch**:

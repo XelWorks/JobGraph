@@ -17,7 +17,7 @@ Start here for common questions:
 
 For questions and general discussions:
 
-- Go to [Discussions](https://github.com/jobgraph/jobgraph/discussions)
+- Go to [Discussions](https://github.com/XelWorks/JobGraph/discussions)
 - Browse existing answers
 - Post your question if not already answered
 - Response time: 24-48 hours
@@ -35,7 +35,7 @@ Join our Discord server for real-time chat:
 
 #### Bug Reports
 
-Found a bug? Open a [GitHub Issue](https://github.com/jobgraph/jobgraph/issues) with:
+Found a bug? Open a [GitHub Issue](https://github.com/XelWorks/JobGraph/issues) with:
 
 - Clear title: `[BUG] What went wrong`
 - Steps to reproduce
@@ -46,7 +46,7 @@ Found a bug? Open a [GitHub Issue](https://github.com/jobgraph/jobgraph/issues) 
 
 #### Feature Requests
 
-Have an idea? Create a [GitHub Issue](https://github.com/jobgraph/jobgraph/issues) with:
+Have an idea? Create a [GitHub Issue](https://github.com/XelWorks/JobGraph/issues) with:
 
 - Clear title: `[FEATURE] What you want`
 - Use case and motivation
@@ -122,7 +122,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ## Additional Resources
 
-- **[GitHub Repository](https://github.com/jobgraph/jobgraph)**
+- **[GitHub Repository](https://github.com/XelWorks/JobGraph)**
 - **[License](../LICENSE)**
 - **[Roadmap](../docs/ROADMAP.md)**
 

@@ -12,7 +12,7 @@
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/jobgraph/jobgraph.git
+git clone https://github.com/XelWorks/JobGraph.git
 cd jobgraph
 
 # 2. Create environment file (NEVER commit this)
@@ -136,7 +136,7 @@ services:
       NEXT_PUBLIC_API_URL: http://localhost:8000
     volumes:
       - ./frontend:/app
-    depends_on:
+    git clone https://github.com/XelWorks/JobGraph.git
       - backend
 
   # Backend (FastAPI)
@@ -222,7 +222,7 @@ docker compose ps
 
 ```bash
 # 1. Clone and setup
-git clone https://github.com/jobgraph/jobgraph.git
+git clone https://github.com/XelWorks/JobGraph.git
 cd jobgraph
 
 # 2. Create .env.local with secrets
@@ -522,8 +522,8 @@ docker compose restart backend
 
 For issues, questions, or suggestions:
 
-- **GitHub Issues**: https://github.com/jobgraph/jobgraph/issues
-- **Documentation**: https://github.com/jobgraph/jobgraph/blob/main/docs/
+- **GitHub Issues**: https://github.com/XelWorks/JobGraph/issues
+- **Documentation**: https://github.com/XelWorks/JobGraph/blob/main/docs/
 - **Security**: security@jobgraph.dev
 - **Community**: discord.gg/jobgraph (coming soon)
 
