@@ -1,0 +1,28 @@
+name: Connector Request
+description: Request a new ATS connector (e.g., Greenhouse, Lever).
+title: "[CONNECTOR] "
+labels: connector
+body:
+  - type: markdown
+    attributes:
+      value: "Please provide details about the connector you'd like added."
+  - type: input
+    id: connector_name
+    attributes:
+      label: Connector name
+      placeholder: e.g. Greenhouse
+  - type: input
+    id: provider_url
+    attributes:
+      label: Provider URL
+      placeholder: https://example.com
+  - type: textarea
+    id: auth
+    attributes:
+      label: Authentication flow
+      description: Describe the auth method (API key, OAuth, etc.)
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Specific requirements
+      description: Any required fields, rate limits, or non-standard behaviors

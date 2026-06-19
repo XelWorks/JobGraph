@@ -1,0 +1,36 @@
+name: Feature Request
+description: Propose a feature or enhancement.
+title: "[FEATURE] "
+labels: enhancement
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks — tell us what you'd like to see and why."
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      placeholder: Short summary of the request
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation and use case
+      description: Explain why this feature is useful and who benefits
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed implementation
+      description: (Optional) Suggest how this could be implemented
+  - type: checkbox
+    id: impacts
+    attributes:
+      label: Areas impacted
+      options:
+        - label: Backend
+          value: backend
+        - label: Frontend
+          value: frontend
+        - label: Connectors
+          value: connectors
+        - label: Docs
+          value: docs

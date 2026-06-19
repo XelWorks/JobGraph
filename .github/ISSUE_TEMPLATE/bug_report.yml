@@ -1,0 +1,31 @@
+name: Bug Report
+description: Use this form to report a bug with steps to reproduce and expected behavior.
+title: "[BUG] "
+labels: bug
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for taking the time to report a bug — please fill in the fields below."
+  - type: input
+    id: short_description
+    attributes:
+      label: Short description
+      placeholder: One-line summary of the bug
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Describe step-by-step how to reproduce the issue
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+  - type: input
+    id: environment
+    attributes:
+      label: Environment (OS, versions)
+      placeholder: e.g. macOS 13, Python 3.11, Docker Compose v2
