@@ -4,6 +4,7 @@ from typing import AsyncGenerator
 
 from app.core.config import settings
 from app.infrastructure.logging.logger import setup_logging
+from app.infrastructure.storage.minio import storage
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -22,6 +23,14 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             "allowed_origins": settings.allowed_origins,
         }
     )
+
+    # 2. Bootstrap infrastructure
+    try:
+        await storage.bootstrap()
+    except Exception as e:
+        logger.error(f"infrastructure_bootstrap_failed: {e}")
+        # In production, we might want to fail fast here depending on criticality
+    
     yield
     # Cleanup on shutdown if needed
     logger.info("app_shutdown")

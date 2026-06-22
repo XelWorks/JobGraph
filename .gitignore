@@ -8,3 +8,7 @@ SPEC/
 .agent/
 
 # === end AIRE SDLC Agentic Framework ===
+
+.env
+*__pycache__
+*.pyc

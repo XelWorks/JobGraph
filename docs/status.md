@@ -26,7 +26,7 @@
 | UI/UX Design | ⏸️ Not Started | — | — | — | 2026-06-19 12:00 |
 | Build Cycles | ⏸️ Not Started | — | — | — | 2026-06-19 12:00 |
 | Implementation Plan | ✅ Done | PRODUCT_OWNER | 2026-06-19 | `docs/plans/implementation-plan.md` | 2026-06-19 22:15 |
-| Epic 1: Foundation | 🟡 In Progress | AIRE_DEV | 2026-06-19 | 2/5 stories done | 2026-06-19 22:45 |
+| Epic 1: Foundation | 🟡 In Progress | AIRE_DEV | 2026-06-22 | 3/5 stories done | 2026-06-22 12:00 |
 | Epic 2: Identity & Profile | ⏸️ Not Started | — | — | 0/4 stories done | 2026-06-19 22:15 |
 | Epic 3: Discovery & Matching | ⏸️ Not Started | — | — | 0/4 stories done | 2026-06-19 22:15 |
 | Epic 4: Tailoring | ⏸️ Not Started | — | — | 0/4 stories done | 2026-06-19 22:15 |
@@ -69,9 +69,9 @@
 |---------|-------|-------|-------|-----|----------|
 | — | 1.0 | Root tooling seed | 2026-06-19 | 2026-06-19 | 2026-06-19 22:35 |
 | — | 1.1 | Backend skeleton | 2026-06-19 | 2026-06-19 | 2026-06-19 22:45 |
-| CR-1 | 1.1 | Backend skeleton (React) | 2026-06-19 | 2026-06-19 | 2026-06-19 23:10 |
+| — | 1.3 | Database and storage bootstrap | 2026-06-22 | 2026-06-22 | 2026-06-22 12:00 |
 | — | 1.2 | Frontend skeleton | — | — | 2026-06-19 22:15 |
-| — | 1.3 | Database and storage bootstrap | — | — | 2026-06-19 22:15 |
+| CR-1 | 1.1 | Backend skeleton (React) | 2026-06-19 | 2026-06-19 | 2026-06-19 23:10 |
 | — | 1.4 | Shell-to-service health wiring | — | — | 2026-06-19 22:15 |
 | — | 2.1 | Authentication API and password hashing | — | — | 2026-06-19 22:15 |
 | — | 2.2 | Profile management API | — | — | 2026-06-19 22:15 |
@@ -132,6 +132,9 @@
 - **Story 1.1**: Backend skeleton — 2026-06-19
   - Evidence: [story-1.1-review.md](file:///C:/Users/gourav.g/Desktop/Job%20Applier/docs/stories-implemented/story-1.1-review.md)
   - Tests: 8 passed, 98% coverage
+- **Story 1.3**: Database and storage bootstrap — 2026-06-22
+  - Evidence: [story-1.3-review.md](file:///C:/Users/gourav.g/Desktop/Job%20Applier/docs/stories-implemented/story-1.3-review.md)
+  - Tests: 3 passed (integration ping + bootstrap logic)
 
 ---
 
