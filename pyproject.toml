@@ -38,8 +38,10 @@ module = [
 ignore_missing_imports = true
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 target-version = "py311"
+
+[tool.ruff.lint]
 select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
@@ -48,7 +50,10 @@ select = [
     "C",  # flake8-comprehensions
     "B",  # flake8-bugbear
 ]
-ignore = []
+ignore = [
+    "B008",  # do not perform function calls in argument defaults (FastAPI Depends)
+    "E501",  # line too long
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"

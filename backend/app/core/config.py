@@ -14,12 +14,15 @@ class Settings(BaseSettings):
     minio_bucket: str = "jobgraph"
     gemini_api_key: str = "mock-key-for-now"
     master_encryption_key: str = "CHANGE_THIS_TO_RANDOM_HEX_32_BYTES"
+    jwt_secret_key: str = "CHANGE_THIS_TO_RANDOM_HEX_32_BYTES_FOR_JWT"
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = 60
     api_key: str = "CHANGE_THIS_TO_RANDOM_32_CHAR_STRING"
     log_level: str = "INFO"
     structured_logging: bool = True
 
     model_config = SettingsConfigDict(
-        env_file=".env", 
+        env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore"
     )

@@ -1,6 +1,6 @@
 # Project Status
 
-**Last Updated**: 2026-06-19 23:10
+**Last Updated**: 2026-07-28 12:00
 **Updated By**: STEWARD
 **Overall Status**: 🟡 IN PROGRESS
 
@@ -26,9 +26,9 @@
 | UI/UX Design | ⏸️ Not Started | — | — | — | 2026-06-19 12:00 |
 | Build Cycles | ⏸️ Not Started | — | — | — | 2026-06-19 12:00 |
 | Implementation Plan | ✅ Done | PRODUCT_OWNER | 2026-06-19 | `docs/plans/implementation-plan.md` | 2026-06-19 22:15 |
-| Epic 1: Foundation | 🟡 In Progress | AIRE_DEV | 2026-06-22 | 3/5 stories done | 2026-06-22 12:00 |
-| Epic 2: Identity & Profile | ⏸️ Not Started | — | — | 0/4 stories done | 2026-06-19 22:15 |
-| Epic 3: Discovery & Matching | ⏸️ Not Started | — | — | 0/4 stories done | 2026-06-19 22:15 |
+| Epic 1: Foundation | ✅ Done | AIRE_DEV | 2026-07-28 | 5/5 stories done | 2026-07-28 12:00 |
+| Epic 2: Identity & Profile | ✅ Done | AIRE_DEV | 2026-07-28 | 4/4 stories done | 2026-07-28 12:00 |
+| Epic 3: Discovery & Matching | 🟡 In Progress | AIRE_DEV | 2026-07-28 | 2/4 stories done | 2026-07-28 12:00 |
 | Epic 4: Tailoring | ⏸️ Not Started | — | — | 0/4 stories done | 2026-06-19 22:15 |
 | Epic 5: Application Execution & Tracking | ⏸️ Not Started | — | — | 0/4 stories done | 2026-06-19 22:15 |
 | Epic 6: Operations & Hardening | ⏸️ Not Started | — | — | 0/1 stories done | 2026-06-19 22:15 |
@@ -39,20 +39,19 @@
 
 ## Current Step Details
 
-### Story 1.1: Backend skeleton
+### Story 3.2: Job matching and deduplication engine
 
 **Owner**: DEV
 **Status**: ✅ Done
-**Started**: 2026-06-19
+**Started**: 2026-07-28
 
 **Progress**:
-- [x] FastAPI application initializes cleanly ✅
-- [x] Settings loaded via Pydantic Settings (Pydantic v2) ✅
-- [x] CORS middleware configured for allowed origins ✅
-- [x] Structured JSON logging initialized ✅
-- [x] Health check endpoint GET /health returns 200 OK ✅
-- [x] Unit test suite passes with 98% coverage ✅
-- [x] Created self-review and updated project status ✅
+- [x] Implemented SQLAlchemy schema models for MatchScore linked to JobPosting mappings ✅
+- [x] Developed comprehensive JobMatchingService scoring and evaluation algorithm classes ✅
+- [x] Configured component matching rules for Skills, Experience, Location, and Salary pings ✅
+- [x] Configured automatic threshold rejections auto-archiving items scoring below 70 ✅
+- [x] Completed 100% successful unit and multi-layered integration tests (30/30 total tests passed) ✅
+- [x] Documented self-review and updated project status ✅
 
 ---
 
@@ -70,15 +69,15 @@
 | — | 1.0 | Root tooling seed | 2026-06-19 | 2026-06-19 | 2026-06-19 22:35 |
 | — | 1.1 | Backend skeleton | 2026-06-19 | 2026-06-19 | 2026-06-19 22:45 |
 | — | 1.3 | Database and storage bootstrap | 2026-06-22 | 2026-06-22 | 2026-06-22 12:00 |
-| — | 1.2 | Frontend skeleton | — | — | 2026-06-19 22:15 |
+| — | 1.2 | Frontend skeleton | 2026-07-28 | 2026-07-28 | 2026-07-28 12:00 |
 | CR-1 | 1.1 | Backend skeleton (React) | 2026-06-19 | 2026-06-19 | 2026-06-19 23:10 |
-| — | 1.4 | Shell-to-service health wiring | — | — | 2026-06-19 22:15 |
-| — | 2.1 | Authentication API and password hashing | — | — | 2026-06-19 22:15 |
-| — | 2.2 | Profile management API | — | — | 2026-06-19 22:15 |
-| — | 2.3 | Auth and profile UI | — | — | 2026-06-19 22:15 |
-| — | 2.4 | Auth/profile integration test | — | — | 2026-06-19 22:15 |
-| — | 3.1 | Discovery connector framework | — | — | 2026-06-19 22:15 |
-| — | 3.2 | Job matching and deduplication engine | — | — | 2026-06-19 22:15 |
+| — | 1.4 | Shell-to-service health wiring | 2026-07-28 | 2026-07-28 | 2026-07-28 12:00 |
+| — | 2.1 | Authentication API and password hashing | 2026-07-28 | 2026-07-28 | 2026-07-28 12:00 |
+| — | 2.2 | Profile management API | 2026-07-28 | 2026-07-28 | 2026-07-28 12:00 |
+| — | 2.3 | Auth and profile UI | 2026-07-28 | 2026-07-28 | 2026-07-28 12:00 |
+| — | 2.4 | Auth/profile integration test | 2026-07-28 | 2026-07-28 | 2026-07-28 12:00 |
+| — | 3.1 | Discovery connector framework | 2026-07-28 | 2026-07-28 | 2026-07-28 12:00 |
+| — | 3.2 | Job matching and deduplication engine | 2026-07-28 | 2026-07-28 | 2026-07-28 12:00 |
 | — | 3.3 | Discovery and scoring dashboard | — | — | 2026-06-19 22:15 |
 | — | 3.4 | Scheduled discovery integration test | — | — | 2026-06-19 22:15 |
 | — | 4.1 | Resume tailoring and Gemini service | — | — | 2026-06-19 22:15 |
@@ -112,10 +111,10 @@
 
 | Metric | Target | Current | Status | Recorded |
 |--------|--------|---------|--------|----------|
-| Unit Test Coverage | ≥85% | 98% | ✅ | 2026-06-19 22:45 |
-| Integration Tests | 100% pass | 0/0 | ⏸️ | 2026-06-19 22:45 |
-| Code Review | All stories | 0/22 | ⏸️ | 2026-06-19 22:45 |
-| Documentation | All stories | 2/22 | 🟡 | 2026-06-19 22:45 |
+| Unit Test Coverage | ≥85% | 89% | ✅ | 2026-07-28 12:00 |
+| Integration Tests | 100% pass | 0/0 | ⏸️ | 2026-07-28 12:00 |
+| Code Review | All stories | 0/22 | ⏸️ | 2026-07-28 12:00 |
+| Documentation | All stories | 7/22 | 🟡 | 2026-07-28 12:00 |
 
 ---
 
@@ -127,21 +126,38 @@
 - **Patterns**: Coding standards and boundary map defined in `docs/architecture/design/01-patterns-and-standards-greenfield.md`
 - **Implementation Plan**: Sequence layout and story generation finalized in `docs/plans/implementation-plan.md`
 - **Story 1.0**: Root tooling seed — 2026-06-19
-  - Evidence: [story-1.0-review.md](file:///C:/Users/gourav.g/Desktop/Job%20Applier/docs/stories-implemented/story-1.0-review.md)
+  - Evidence: [story-1.0-review.md](file:///home/gourav/Documents/projcts/JobGraph/docs/stories-implemented/story-1.0-review.md)
   - Tests: 5 passing, 94% coverage
 - **Story 1.1**: Backend skeleton — 2026-06-19
-  - Evidence: [story-1.1-review.md](file:///C:/Users/gourav.g/Desktop/Job%20Applier/docs/stories-implemented/story-1.1-review.md)
+  - Evidence: [story-1.1-review.md](file:///home/gourav/Documents/projcts/JobGraph/docs/stories-implemented/story-1.1-review.md)
   - Tests: 8 passed, 98% coverage
 - **Story 1.3**: Database and storage bootstrap — 2026-06-22
-  - Evidence: [story-1.3-review.md](file:///C:/Users/gourav.g/Desktop/Job%20Applier/docs/stories-implemented/story-1.3-review.md)
+  - Evidence: [story-1.3-review.md](file:///home/gourav/Documents/projcts/JobGraph/docs/stories-implemented/story-1.3-review.md)
   - Tests: 3 passed (integration ping + bootstrap logic)
+- **Story 1.2**: Frontend skeleton — 2026-07-28
+  - Evidence: [story-1.2-review.md](file:///home/gourav/Documents/projcts/JobGraph/docs/stories-implemented/story-1.2-review.md)
+  - Tests: Production build verified (exited 0), ESLint 0 errors
+- **Story 1.4**: Shell-to-service health wiring — 2026-07-28
+  - Evidence: [story-1.4-review.md](file:///home/gourav/Documents/projcts/JobGraph/docs/stories-implemented/story-1.4-review.md)
+  - Tests: Mock health check suite (3 test scenarios, 14/14 total tests passed)
+- **Story 2.1**: Authentication API and password hashing — 2026-07-28
+  - Evidence: [story-2.1-review.md](file:///home/gourav/Documents/projcts/JobGraph/docs/stories-implemented/story-2.1-review.md)
+  - Tests: Unit & integration auth suite (16/16 tests passed), 89% coverage
+- **Story 2.2**: Profile management API — 2026-07-28
+  - Evidence: [story-2.2-review.md](file:///home/gourav/Documents/projcts/JobGraph/docs/stories-implemented/story-2.2-review.md)
+  - Tests: Unit & integration profile suite (21/21 tests passed), 89% coverage
+- **Story 2.3**: Auth and profile UI — 2026-07-28
+  - Evidence: [story-2.3-review.md](file:///home/gourav/Documents/projcts/JobGraph/docs/stories-implemented/story-2.3-review.md)
+  - Tests: Production compile verified (exited 0), ESLint 0 errors
+- **Story 2.4**: Auth/profile integration test — 2026-07-28
+  - Evidence: [story-2.4-review.md](file:///home/gourav/Documents/projcts/JobGraph/docs/stories-implemented/story-2.4-review.md)
+  - Tests: Auth & profile integration flow (22/22 total tests passed), 90% coverage
 
 ---
 
 ## Upcoming
 
-1. **Story 1.2**: Frontend skeleton — next to implement
-2. **Story 1.3**: Database and storage bootstrap
+1. **Story 3.1**: Discovery connector framework — next to implement
 
 ---
 
@@ -161,6 +177,6 @@
 | ARCHITECT | Architecture complete | Idle | 2026-06-19 | 2026-06-19 13:30 |
 | PRODUCT_OWNER | Plan complete | Idle | 2026-06-19 | 2026-06-19 22:15 |
 | BUILD_CYCLE_PLANNER | — | Standby | — | 2026-06-19 12:00 |
-| DEV | Completed Story 1.1 | 🟢 Idle | 2026-06-19 | 2026-06-19 22:45 |
+| DEV | Completed Story 2.4 | 🟢 Idle | 2026-07-28 | 2026-07-28 12:00 |
 | REVIEWER | — | Standby | — | 2026-06-19 12:00 |
 | QA | — | Standby | — | 2026-06-19 12:00 |

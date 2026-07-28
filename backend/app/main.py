@@ -1,12 +1,16 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+from app.api import api_router
 from app.core.config import settings
+from app.infrastructure.db.session import engine
 from app.infrastructure.logging.logger import setup_logging
 from app.infrastructure.storage.minio import storage
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 logger = logging.getLogger("app.main")
 
@@ -24,13 +28,22 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         }
     )
 
-    # 2. Bootstrap infrastructure
+    # 2. Bootstrap infrastructure & create tables
     try:
+        # Trigger import of domain models so SQLAlchemy registers them in Base.metadata
+        from app.domain.auth import User  # noqa
+        from app.domain.profile import UserProfile, Skill, Experience  # noqa
+        from app.domain.job import JobPosting, MatchScore  # noqa
+        from app.infrastructure.db.session import Base
+
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+
         await storage.bootstrap()
     except Exception as e:
         logger.error(f"infrastructure_bootstrap_failed: {e}")
         # In production, we might want to fail fast here depending on criticality
-    
+
     yield
     # Cleanup on shutdown if needed
     logger.info("app_shutdown")
@@ -53,10 +66,41 @@ def create_app() -> FastAPI:
     )
 
     # 3. Register endpoints
+    fastapi_app.include_router(api_router, prefix="/api/v1")
+
     @fastapi_app.get("/health", status_code=200)
     async def health_check() -> dict[str, str]:
-        """Simple health check endpoint."""
-        return {"status": "healthy"}
+        """Verify dynamic database and storage availability."""
+        db_status = "healthy"
+        storage_status = "healthy"
+
+        # Check database connection
+        try:
+            async with engine.connect() as conn:
+                await conn.execute(text("SELECT 1"))
+        except Exception as e:
+            logger.error(f"health_check_db_failed: {e}")
+            db_status = "unhealthy"
+
+        # Check storage connection
+        try:
+            # minio is synchronous, run in threadpool
+            exists = await asyncio.to_thread(
+                storage.client.bucket_exists, storage.bucket_name
+            )
+            if not exists:
+                storage_status = "unhealthy"
+        except Exception as e:
+            logger.error(f"health_check_storage_failed: {e}")
+            storage_status = "unhealthy"
+
+        overall_status = "healthy" if db_status == "healthy" and storage_status == "healthy" else "unhealthy"
+
+        return {
+            "status": overall_status,
+            "database": db_status,
+            "storage": storage_status,
+        }
 
     return fastapi_app
 
