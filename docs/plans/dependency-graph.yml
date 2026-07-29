@@ -325,6 +325,179 @@ stories:
     files_touched:
       - backend/tests/integration/test_application_flow.py
 
+  - id: "7.1"
+    title: "Session Vault & Encrypted Profile Storage API"
+    epic: 7
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 1"
+    wave: 13
+    requires: ["2.2", "6.1"]
+    enables: ["7.2", "7.3", "8.3"]
+    files_touched:
+      - backend/app/domain/vault.py
+      - backend/app/infrastructure/db/vault_repository.py
+      - backend/app/api/vault.py
+
+  - id: "8.1"
+    title: "Unified Connector SDK"
+    epic: 8
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 2"
+    wave: 13
+    requires: ["3.1", "6.1"]
+    enables: ["8.2", "8.3", "9.1"]
+    files_touched:
+      - backend/app/domain/connector.py
+      - backend/app/services/discovery/connector_sdk.py
+
+  - id: "7.2"
+    title: "Account Hub Management UI"
+    epic: 7
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 2"
+    wave: 14
+    requires: ["7.1"]
+    enables: ["8.2"]
+    files_touched:
+      - frontend/src/features/vault/AccountHub.tsx
+
+  - id: "7.3"
+    title: "Session Vault Integration Test"
+    epic: 7
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 1"
+    wave: 14
+    requires: ["7.1"]
+    enables: []
+    files_touched:
+      - backend/tests/integration/test_vault.py
+
+  - id: "8.2"
+    title: "Browser Profile Manager UI & Fingerprint Inspector"
+    epic: 8
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 2"
+    wave: 15
+    requires: ["7.2", "8.1"]
+    enables: []
+    files_touched:
+      - frontend/src/features/vault/BrowserProfileManager.tsx
+
+  - id: "8.3"
+    title: "Connector & Browser Profile Integration Test"
+    epic: 8
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 1"
+    wave: 15
+    requires: ["8.1", "7.1"]
+    enables: []
+    files_touched:
+      - backend/tests/integration/test_connector_sdk.py
+
+  - id: "9.1"
+    title: "Decoupled Valkey Task Queue & Standalone Browser Worker"
+    epic: 9
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 1"
+    wave: 16
+    requires: ["5.1", "8.1"]
+    enables: ["9.2", "9.4"]
+    files_touched:
+      - backend/app/infrastructure/queue/valkey_queue.py
+      - workers/browser_worker.py
+
+  - id: "9.2"
+    title: "Event-Based Automation System"
+    epic: 9
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 2"
+    wave: 16
+    requires: ["9.1"]
+    enables: ["9.3", "9.4", "10.1"]
+    files_touched:
+      - backend/app/services/automation/events.py
+
+  - id: "9.3"
+    title: "Worker Control UI & Live Telemetry Panel"
+    epic: 9
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 2"
+    wave: 17
+    requires: ["9.2"]
+    enables: ["10.2"]
+    files_touched:
+      - frontend/src/features/workers/WorkerControlPanel.tsx
+
+  - id: "9.4"
+    title: "Worker Queue Integration Test"
+    epic: 9
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 1"
+    wave: 17
+    requires: ["9.1", "9.2"]
+    enables: ["10.3"]
+    files_touched:
+      - backend/tests/integration/test_worker_queue.py
+
+  - id: "10.1"
+    title: "'Take Control' Interactive Browser Takeover & Handshake"
+    epic: 10
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 1"
+    wave: 18
+    requires: ["9.1", "9.2"]
+    enables: ["10.3"]
+    files_touched:
+      - backend/app/services/automation/takeover.py
+
+  - id: "10.2"
+    title: "Job Replay Timeline UI & Audit Log Service"
+    epic: 10
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 2"
+    wave: 18
+    requires: ["9.2", "9.3"]
+    enables: ["10.3"]
+    files_touched:
+      - frontend/src/features/applications/JobReplayTimeline.tsx
+
+  - id: "10.3"
+    title: "End-to-End Interactive Control & Replay Test"
+    epic: 10
+    jira: LOCAL
+    github: null
+    azure_devops: null
+    developer: "Dev 1"
+    wave: 19
+    requires: ["10.1", "10.2", "9.4"]
+    enables: []
+    files_touched:
+      - backend/tests/integration/test_interactive_replay.py
+
 waves:
   - wave: 1
     stories: ["1.0"]
@@ -350,3 +523,51 @@ waves:
     stories: ["5.2", "6.1"]
   - wave: 12
     stories: ["5.4"]
+  - wave: 13
+    stories: ["7.1", "8.1"]
+    assignments:
+      - dev: 1
+        stories: ["7.1"]
+      - dev: 2
+        stories: ["8.1"]
+  - wave: 14
+    stories: ["7.2", "7.3"]
+    assignments:
+      - dev: 1
+        stories: ["7.3"]
+      - dev: 2
+        stories: ["7.2"]
+  - wave: 15
+    stories: ["8.2", "8.3"]
+    assignments:
+      - dev: 1
+        stories: ["8.3"]
+      - dev: 2
+        stories: ["8.2"]
+  - wave: 16
+    stories: ["9.1", "9.2"]
+    assignments:
+      - dev: 1
+        stories: ["9.1"]
+      - dev: 2
+        stories: ["9.2"]
+  - wave: 17
+    stories: ["9.3", "9.4"]
+    assignments:
+      - dev: 1
+        stories: ["9.4"]
+      - dev: 2
+        stories: ["9.3"]
+  - wave: 18
+    stories: ["10.1", "10.2"]
+    assignments:
+      - dev: 1
+        stories: ["10.1"]
+      - dev: 2
+        stories: ["10.2"]
+  - wave: 19
+    stories: ["10.3"]
+    assignments:
+      - dev: 1
+        stories: ["10.3"]
+

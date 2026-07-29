@@ -2,14 +2,15 @@ import io
 import logging
 import uuid
 
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.api.deps import get_current_user
 from app.domain.auth import User
 from app.infrastructure.db.profile_repository import profile_repository
 from app.infrastructure.db.session import get_db
 from app.infrastructure.storage.minio import storage
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
-from pydantic import BaseModel, ConfigDict, Field, field_validator
-from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
 logger = logging.getLogger(__name__)

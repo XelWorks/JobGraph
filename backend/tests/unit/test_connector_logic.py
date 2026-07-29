@@ -1,10 +1,10 @@
-import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
-from sqlalchemy import select
+from unittest.mock import AsyncMock, patch
 
+import pytest
 from app.domain.job import JobPosting
 from app.infrastructure.db.session import SessionLocal
 from app.services.discovery.connector import GreenhouseConnector, LeverConnector
+from sqlalchemy import select
 
 # --- MOCK RAW PAYLOADS ---
 
@@ -36,7 +36,7 @@ def test_greenhouse_connector_parse():
     """Verify Greenhouse parsing normalizes titles, external IDs, and formats."""
     connector = GreenhouseConnector()
     parsed = connector.parse_job(MOCK_GREENHOUSE_RAW, "mockcompany")
-    
+
     assert parsed["external_job_id"] == "12345"
     assert parsed["title"] == "Staff Platform Engineer"  # Trimmed whitespace
     assert parsed["company"] == "Mockcompany"
@@ -48,7 +48,7 @@ def test_lever_connector_parse():
     """Verify Lever parsing handles categorized sections and bullet listings."""
     connector = LeverConnector()
     parsed = connector.parse_job(MOCK_LEVER_RAW, "mockcomp")
-    
+
     assert parsed["external_job_id"] == "lever-uuid-9876"
     assert parsed["title"] == "Senior generative AI Developer"
     assert parsed["company"] == "Mockcomp"
@@ -63,21 +63,21 @@ async def test_connector_sync_deduplication():
     async with SessionLocal() as session:
         board_token = "mockcompany-test"
         connector = GreenhouseConnector()
-        
+
         # Patch fetch_jobs to yield our mock greenhouse listings
         with patch.object(GreenhouseConnector, "fetch_jobs", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [MOCK_GREENHOUSE_RAW]
-            
+
             # Sync first time (inserts the record)
             synced_first = await connector.sync_board(session, board_token)
             assert len(synced_first) == 1
             record_id = synced_first[0].id
-            
+
             # Re-sync to verify deduplication behavior
             synced_second = await connector.sync_board(session, board_token)
             assert len(synced_second) == 1
             assert synced_second[0].id == record_id  # Returns the same database primary key ID
-            
+
             # Assert query returns exactly one record in the database, validating deduplication
             query = select(JobPosting).where(
                 JobPosting.platform == "Greenhouse",
@@ -87,7 +87,7 @@ async def test_connector_sync_deduplication():
             res = await session.execute(query)
             listings = res.scalars().all()
             assert len(listings) == 1
-            
+
             # Cleanup Database listing record
             await session.delete(listings[0])
             await session.commit()

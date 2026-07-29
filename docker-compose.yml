@@ -10,9 +10,11 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME:-jobgraph}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-jobgraph}"]
       interval: 10s
@@ -25,9 +27,11 @@ services:
     restart: always
     command: valkey-server --requirepass "${VALKEY_PASSWORD}"
     ports:
-      - "${VALKEY_PORT:-6379}:6379"
+      - "127.0.0.1:${VALKEY_PORT:-6379}:6379"
     volumes:
       - valkey_data:/data
+    networks:
+      - internal_network
     healthcheck:
       test: ["CMD", "valkey-cli", "-a", "${VALKEY_PASSWORD}", "ping"]
       interval: 10s
@@ -40,13 +44,15 @@ services:
     restart: always
     command: server /data --console-address ":9001"
     ports:
-      - "9010:9000"
-      - "9011:9001"
+      - "127.0.0.1:9010:9000"
+      - "127.0.0.1:9011:9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
     volumes:
       - minio_data:/data
+    networks:
+      - internal_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 10s
@@ -81,6 +87,8 @@ services:
       - API_KEY=${API_KEY}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - STRUCTURED_LOGGING=${STRUCTURED_LOGGING:-true}
+    networks:
+      - internal_network
     depends_on:
       postgres:
         condition: service_healthy
@@ -88,6 +96,11 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     build:
@@ -99,7 +112,9 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=${ENVIRONMENT:-development}
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
+    networks:
+      - internal_network
     depends_on:
       - backend
 
@@ -109,7 +124,7 @@ services:
       dockerfile: Dockerfile
     container_name: autoapply-worker
     restart: always
-    command: python -m app.worker
+    command: python -c "print('Worker idle state')"
     environment:
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - DB_HOST=postgres
@@ -118,6 +133,25 @@ services:
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD}
       - VALKEY_HOST=valkey
+      - VALKEY_PORT=6379
+      - VALKEY_PASSWORD=${VALKEY_PASSWORD}
+    networks:
+      - internal_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+
+networks:
+  internal_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  valkey_data:
+  minio_data:
+
       - VALKEY_PORT=6379
       - VALKEY_PASSWORD=${VALKEY_PASSWORD}
       - MINIO_ENDPOINT=http://minio:9000

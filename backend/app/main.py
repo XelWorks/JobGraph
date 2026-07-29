@@ -3,14 +3,15 @@ import logging
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
+
 from app.api import api_router
 from app.core.config import settings
 from app.infrastructure.db.session import engine
 from app.infrastructure.logging.logger import setup_logging
 from app.infrastructure.storage.minio import storage
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import text
 
 logger = logging.getLogger("app.main")
 
@@ -33,7 +34,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         # Trigger import of domain models so SQLAlchemy registers them in Base.metadata
         from app.domain.auth import User  # noqa
         from app.domain.profile import UserProfile, Skill, Experience  # noqa
-        from app.domain.job import JobPosting, MatchScore  # noqa
+        from app.domain.job import JobPosting, MatchScore, Application  # noqa
         from app.infrastructure.db.session import Base
 
         async with engine.begin() as conn:
