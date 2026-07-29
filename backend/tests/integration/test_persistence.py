@@ -1,7 +1,8 @@
 import pytest
-from sqlalchemy import text
 from app.infrastructure.db.session import SessionLocal
 from app.infrastructure.storage.minio import storage
+from sqlalchemy import text
+
 
 @pytest.mark.asyncio
 async def test_postgresql_connection():
@@ -18,7 +19,7 @@ async def test_postgresql_connection():
 async def test_minio_connection():
     """Verify MinIO connection by checking bucket existence."""
     try:
-        # storage.bootstrap() is called in app lifespan, 
+        # storage.bootstrap() is called in app lifespan,
         # but for testing we can call it directly or just check exists
         exists = storage.client.bucket_exists(storage.bucket_name)
         # If it doesn't exist, try to create it to verify write permission

@@ -1,11 +1,12 @@
 import re
 import uuid
 
-from app.infrastructure.db.session import get_db
-from app.services.auth import authenticate_user, create_access_token, register_user
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.infrastructure.db.session import get_db
+from app.services.auth import authenticate_user, create_access_token, register_user
 
 router = APIRouter()
 

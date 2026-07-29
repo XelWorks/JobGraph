@@ -1,13 +1,13 @@
 import uuid
-import pytest
-from sqlalchemy import select, delete
 
-from app.main import app
+import pytest
 from app.domain.auth import User
-from app.domain.profile import UserProfile, Skill
 from app.domain.job import JobPosting, MatchScore
+from app.domain.profile import Skill, UserProfile
 from app.infrastructure.db.session import SessionLocal
 from app.services.matching.scoring import job_matching_service
+from sqlalchemy import delete, select
+
 
 @pytest.mark.asyncio
 async def test_full_job_matching_ingestion_integration():
@@ -23,7 +23,7 @@ async def test_full_job_matching_ingestion_integration():
     user_id = uuid.uuid4()
     profile_record_id = uuid.uuid4()
     job_id = uuid.uuid4()
-    
+
     async with SessionLocal() as session:
         # Create test User
         user = User(
@@ -34,7 +34,7 @@ async def test_full_job_matching_ingestion_integration():
             last_name="Tester"
         )
         session.add(user)
-        
+
         # Create test UserProfile
         profile = UserProfile(
             id=profile_record_id,
@@ -46,13 +46,13 @@ async def test_full_job_matching_ingestion_integration():
         )
         session.add(profile)
         await session.flush()
-        
+
         # Add profile skills
         skills = ["Python", "FastAPI", "PostgreSQL", "Docker"]
         for skill_name in skills:
             skill = Skill(profile_id=profile_record_id, name=skill_name)
             session.add(skill)
-            
+
         # Create JobPosting listing
         job = JobPosting(
             id=job_id,
@@ -74,12 +74,12 @@ async def test_full_job_matching_ingestion_integration():
             select(UserProfile).where(UserProfile.id == profile_record_id)
         )
         db_profile = profile_query.scalar_one()
-        
+
         job_query = await session.execute(
             select(JobPosting).where(JobPosting.id == job_id)
         )
         db_job = job_query.scalar_one()
-        
+
         # Execute Matching service
         # Expected Score breakdown weights:
         # - Skill: Python, FastAPI, PostgreSQL (mapped to Postgres), Docker matches = 100% matched -> 40 points
@@ -88,14 +88,14 @@ async def test_full_job_matching_ingestion_integration():
         # - Salary: $140,000 matches or exceeds $130,000 target -> 100% -> 15 points
         # Overall expected score = 100
         match_score = await job_matching_service.score_and_evaluate_job(session, db_profile, db_job, threshold=70)
-        
+
         assert match_score.overall_score == 100
         assert match_score.skill_score == 100
         assert match_score.experience_score == 100
         assert match_score.location_score == 100
         assert match_score.salary_score == 100
         assert match_score.is_archived is False
-        
+
         # Re-run scoring to test deduplication in update-mode
         # Temporarily increase threshold to 110 to trigger auto-archiving
         updated_score = await job_matching_service.score_and_evaluate_job(session, db_profile, db_job, threshold=110)

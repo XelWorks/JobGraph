@@ -1,8 +1,10 @@
-import uuid
 import io
+import uuid
+
 import pytest
-from fastapi.testclient import TestClient
 from app.main import app
+from fastapi.testclient import TestClient
+
 
 @pytest.fixture
 def auth_headers():
@@ -10,7 +12,7 @@ def auth_headers():
     with TestClient(app) as client:
         email = f"profile_candidate_{uuid.uuid4().hex[:8]}@example.com"
         password = "SecurePassword123!"
-        
+
         # 1. Register
         register_payload = {
             "email": email,
@@ -20,7 +22,7 @@ def auth_headers():
         }
         reg_resp = client.post("/api/v1/auth/register", json=register_payload)
         assert reg_resp.status_code == 201
-        
+
         # 2. Login
         login_payload = {
             "email": email,
@@ -29,7 +31,7 @@ def auth_headers():
         login_resp = client.post("/api/v1/auth/login", json=login_payload)
         assert login_resp.status_code == 200
         token = login_resp.json()["access_token"]
-        
+
         return {"Authorization": f"Bearer {token}"}
 
 def test_get_profile_not_found(auth_headers):
@@ -49,7 +51,7 @@ def test_create_and_get_profile_success(auth_headers):
             "target_salary": 140000,
             "skills": ["Python", "FastAPI", "SQLAlchemy", "MinIO"]
         }
-        
+
         # 1. Create Profile
         create_resp = client.post("/api/v1/profile", json=payload, headers=auth_headers)
         assert create_resp.status_code == 200
@@ -60,7 +62,7 @@ def test_create_and_get_profile_success(auth_headers):
         assert data["target_salary"] == 140000
         assert data["skills"] == ["Python", "FastAPI", "SQLAlchemy", "MinIO"]
         assert data["master_resume_url"] is None
-        
+
         # 2. Get Profile
         get_resp = client.get("/api/v1/profile", headers=auth_headers)
         assert get_resp.status_code == 200
@@ -108,7 +110,7 @@ def test_upload_resume_success(auth_headers):
         # Create a dummy PDF content
         dummy_file = io.BytesIO(b"%PDF-1.4 mock pdf content")
         files = {"file": ("my_resume.pdf", dummy_file, "application/pdf")}
-        
+
         response = client.post("/api/v1/profile/resume", files=files, headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
@@ -121,7 +123,7 @@ def test_upload_resume_invalid_type(auth_headers):
     with TestClient(app) as client:
         dummy_file = io.BytesIO(b"executable content")
         files = {"file": ("virus.exe", dummy_file, "application/x-msdownload")}
-        
+
         response = client.post("/api/v1/profile/resume", files=files, headers=auth_headers)
         assert response.status_code == 400
         assert "pdf or word" in response.json()["detail"].lower()

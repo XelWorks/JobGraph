@@ -73,6 +73,44 @@ graph TD
   S51 --> S54
   S52 --> S54
   S53 --> S54
+
+  S71[7.1 Session Vault & Encrypted Profile Storage API]
+  S72[7.2 Account Hub Management UI]
+  S73[7.3 Session Vault Integration Test]
+  S81[8.1 Unified Connector SDK]
+  S82[8.2 Browser Profile Manager UI & Fingerprint Inspector]
+  S83[8.3 Connector & Browser Profile Integration Test]
+  S91[9.1 Decoupled Valkey Task Queue & Standalone Browser Worker]
+  S92[9.2 Event-Based Automation System]
+  S93[9.3 Worker Control UI & Live Telemetry Panel]
+  S94[9.4 Worker Queue Integration Test]
+  S101[10.1 'Take Control' Interactive Browser Takeover & Handshake]
+  S102[10.2 Job Replay Timeline UI & Audit Log Service]
+  S103[10.3 End-to-End Interactive Control & Replay Test]
+
+  S22 --> S71
+  S61 --> S71
+  S31 --> S81
+  S61 --> S81
+  S71 --> S72
+  S71 --> S73
+  S72 --> S82
+  S81 --> S82
+  S81 --> S83
+  S71 --> S83
+  S51 --> S91
+  S81 --> S91
+  S91 --> S92
+  S92 --> S93
+  S91 --> S94
+  S92 --> S94
+  S91 --> S101
+  S92 --> S101
+  S92 --> S102
+  S93 --> S102
+  S101 --> S103
+  S102 --> S103
+  S94 --> S103
 ```
 
 ---
@@ -93,12 +131,19 @@ graph TD
 | 10 | 4.4, 5.1 | Operations launch (Tailoring integration test & Headless browser core) |
 | 11 | 5.2, 6.1 | Submissions prep (Form modes/QA agent & Observability) |
 | 12 | 5.4 | Final integration (E2E submission integration test) |
+| 13 | 7.1, 8.1 | Session Vault API & Unified Connector SDK |
+| 14 | 7.2, 7.3 | Account Hub UI & Vault Integration Test |
+| 15 | 8.2, 8.3 | Browser Profile UI & Connector SDK Test |
+| 16 | 9.1, 9.2 | Standalone Worker & Event System |
+| 17 | 9.3, 9.4 | Worker Control UI & Worker Queue Test |
+| 18 | 10.1, 10.2 | Interactive Takeover & Job Replay Timeline UI |
+| 19 | 10.3 | Interactive Control & Replay E2E Test |
 
 ---
 
 ## Overview
 
-**Story Count**: 22
+**Story Count**: 35
 **Build Cycles**: Not used
 **UI/UX Design**: Not included in this planning pass
 **Team Size Hint**: 2
@@ -113,6 +158,10 @@ graph TD
 - Epic 4: Tailoring - generate tailored resumes and cover letters, then let users review and download them.
 - Epic 5: Application Execution & Tracking - execute browser applications, handle recruiter questions, and show tracking/reporting.
 - Epic 6: Operations & Hardening - observability, smoke checks, and deployment hardening.
+- Epic 7: Session Vault & Account Hub - manage multi-portal credentials, browser sessions, cookies, and portal connection health.
+- Epic 8: Browser Profile & Connector SDK - unified connector interface for job portals and browser profile management with fingerprint inspection.
+- Epic 9: Standalone Worker & Event-Based Automation - decoupled Valkey task queue, standalone browser worker daemon, event emission, and live telemetry control.
+- Epic 10: Interactive Control & Job Replay Audit - "Take Control" browser takeover handshake for CAPTCHA/MFA and step-by-step job replay timeline.
 
 ---
 
@@ -240,6 +289,82 @@ Implement structured logging, metrics, smoke checks, and deployment hardening.
  
 ---
 
+## EPIC 7: SESSION VAULT & ACCOUNT HUB
+
+**Owner**: ARCHITECT | **Goal**: Store browser sessions, cookies, and local storage encrypted in a Session Vault and present connected portal health in the Account Hub.
+
+### Story 7.1: Session Vault & Encrypted Profile Storage API
+**Developer**: Dev 1  
+Implement encrypted AES-256-GCM Session Vault storage for browser cookies, session state, and account credentials.
+
+### Story 7.2: Account Hub Management UI
+**Developer**: Dev 2  
+Build the Account Hub interface displaying portal connection health, session validity, and account connection controls.
+
+### Story 7.3: Session Vault Integration Test
+**Developer**: Dev 1  
+Verify encryption/decryption, session validation, and database persistence in the Session Vault.
+
+---
+
+## EPIC 8: BROWSER PROFILE & CONNECTOR SDK
+
+**Owner**: ARCHITECT | **Goal**: Standardize job portal interactions with a Unified Connector SDK and expose browser profile fingerprint management.
+
+### Story 8.1: Unified Connector SDK
+**Developer**: Dev 2  
+Implement the standardized connector contract (`connect`, `disconnect`, `validate_session`, `search_jobs`, `apply`, `health_check`, `refresh_session`).
+
+### Story 8.2: Browser Profile Manager UI & Fingerprint Inspector
+**Developer**: Dev 2  
+Build the Browser Profile Manager UI for inspecting Chromium browser sessions, cookies, user-agent fingerprints, and manual launch controls.
+
+### Story 8.3: Connector & Browser Profile Integration Test
+**Developer**: Dev 1  
+Verify the Unified Connector SDK contracts and browser profile session lifecycle in an integration test.
+
+---
+
+## EPIC 9: STANDALONE BROWSER WORKER & EVENT-BASED AUTOMATION
+
+**Owner**: ARCHITECT | **Goal**: Decouple browser execution into a standalone worker daemon backed by Valkey queues and an event-based automation pipeline.
+
+### Story 9.1: Decoupled Valkey Task Queue & Standalone Browser Worker
+**Developer**: Dev 1  
+Implement the Valkey-backed task queue and standalone browser worker daemon isolated from the FastAPI application server.
+
+### Story 9.2: Event-Based Automation System
+**Developer**: Dev 2  
+Implement event emitter and handler architecture (`ApplicationStarted`, `WorkerAssigned`, `SessionValidated`, `ApplicationSubmitted`).
+
+### Story 9.3: Worker Control UI & Live Telemetry Panel
+**Developer**: Dev 2  
+Build the live worker control UI showing active worker status, step telemetry, pause, resume, and stop controls.
+
+### Story 9.4: Worker Queue Integration Test
+**Developer**: Dev 1  
+Verify background task queuing, worker execution, and event emission across the decoupled architecture.
+
+---
+
+## EPIC 10: INTERACTIVE CONTROL & JOB REPLAY AUDIT
+
+**Owner**: ARCHITECT | **Goal**: Provide "Take Control" browser takeover for CAPTCHA/MFA challenges and step-by-step job replay audit trails.
+
+### Story 10.1: 'Take Control' Interactive Browser Takeover & Handshake
+**Developer**: Dev 1  
+Implement the interactive browser takeover protocol allowing candidates to solve CAPTCHA/MFA and hand control back to the worker seamlessly.
+
+### Story 10.2: Job Replay Timeline UI & Audit Log Service
+**Developer**: Dev 2  
+Build the step-by-step job replay timeline UI and audit trail service detailing every execution event.
+
+### Story 10.3: End-to-End Interactive Control & Replay Test
+**Developer**: Dev 1  
+Verify end-to-end browser takeover, resume automation handshake, and step-by-step replay logging.
+
+---
+
 ## QA Manual Testing Groups
 
 - Foundation smoke: app boots, backend health responds, frontend sees backend connection.
@@ -248,3 +373,7 @@ Implement structured logging, metrics, smoke checks, and deployment hardening.
 - Tailoring: Gemini output generation, artifact storage, download verification.
 - Application Execution & Tracking: application submission modes, recruiter answers, tracking entries.
 - Operations: logging, metrics, smoke tests, container startup validation.
+- Session Vault & Account Hub: portal connection health, encrypted session storage, account connection cards.
+- Browser Profile & Connector SDK: browser fingerprint inspection, profile open/reconnect actions, unified connector lifecycle.
+- Standalone Worker & Event System: background queue processing, live worker telemetry, pause/stop worker actions.
+- Interactive Control & Replay: "Take Control" browser takeover handshake, step-by-step execution timeline replay.

@@ -3,10 +3,10 @@ import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { Profile } from './features/profiles/Profile';
 import { AuthForm } from './features/auth/AuthForm';
+import { JobsFeed } from './features/jobs/JobsFeed';
+import { Applications } from './features/applications/Applications';
 import { useHealthCheck, HealthBadge } from './components/HealthCheck';
 import {
-  Search,
-  Briefcase,
   Settings,
   HelpCircle,
   Bell,
@@ -50,47 +50,9 @@ export const App: React.FC = () => {
       case 'profile':
         return <Profile token={token} />;
       case 'discovery':
-        return (
-          <div className="bg-slate-950/20 border border-slate-800/60 rounded-xl p-8 max-w-4xl space-y-6">
-            <div className="flex items-center gap-3 border-b border-slate-800 pb-5">
-              <Search className="h-6 w-6 text-sky-400" />
-              <div>
-                <h2 className="text-xl font-bold text-white">Job Discovery</h2>
-                <p className="text-xs text-slate-500">Intelligent background crawler matching from ATS connectors</p>
-              </div>
-            </div>
-            <div className="p-16 border-2 border-dashed border-slate-800 rounded-xl text-center">
-              <div className="h-12 w-12 rounded-full bg-slate-900 flex items-center justify-center text-slate-500 mx-auto mb-4 border border-slate-800">
-                <Search className="h-6 w-6" />
-              </div>
-              <h3 className="text-base font-semibold text-slate-200">No Job Listings Loaded</h3>
-              <p className="text-xs text-slate-500 max-w-md mx-auto mt-2 leading-relaxed">
-                Connect your Greenhouse and Lever APIs or configure search keywords to initiate automatic candidate crawling.
-              </p>
-            </div>
-          </div>
-        );
+        return <JobsFeed token={token} />;
       case 'applications':
-        return (
-          <div className="bg-slate-950/20 border border-slate-800/60 rounded-xl p-8 max-w-4xl space-y-6">
-            <div className="flex items-center gap-3 border-b border-slate-800 pb-5">
-              <Briefcase className="h-6 w-6 text-sky-400" />
-              <div>
-                <h2 className="text-xl font-bold text-white">Applications Funnel</h2>
-                <p className="text-xs text-slate-500">Track current and historic automated job submission runs</p>
-              </div>
-            </div>
-            <div className="p-16 border-2 border-dashed border-slate-800 rounded-xl text-center">
-              <div className="h-12 w-12 rounded-full bg-slate-900 flex items-center justify-center text-slate-500 mx-auto mb-4 border border-slate-800">
-                <Briefcase className="h-6 w-6" />
-              </div>
-              <h3 className="text-base font-semibold text-slate-200">No Active Submissions</h3>
-              <p className="text-xs text-slate-500 max-w-md mx-auto mt-2 leading-relaxed">
-                Matched job listings will trigger automatic tailoring and headless Playwright submits. Your running applications list will populate here.
-              </p>
-            </div>
-          </div>
-        );
+        return <Applications token={token} />;
       case 'settings':
         return (
           <div className="bg-slate-950/20 border border-slate-800/60 rounded-xl p-8 max-w-4xl space-y-6">

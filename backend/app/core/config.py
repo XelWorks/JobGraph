@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     minio_password: str = "CHANGE_THIS_TO_STRONG_PASSWORD"
     minio_bucket: str = "jobgraph"
     gemini_api_key: str = "mock-key-for-now"
+    gemini_model: str = "gemini-1.5-flash"
     master_encryption_key: str = "CHANGE_THIS_TO_RANDOM_HEX_32_BYTES"
     jwt_secret_key: str = "CHANGE_THIS_TO_RANDOM_HEX_32_BYTES_FOR_JWT"
     jwt_algorithm: str = "HS256"
@@ -22,7 +23,7 @@ class Settings(BaseSettings):
     structured_logging: bool = True
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", "../.env"),
         env_file_encoding="utf-8",
         extra="ignore"
     )

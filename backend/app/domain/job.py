@@ -69,3 +69,50 @@ class MatchScore(Base):
 
     job_posting: Mapped["JobPosting"] = relationship("JobPosting", back_populates="match_score")
 
+
+class Application(Base):
+    __tablename__ = "applications"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    job_posting_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("job_postings.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    status: Mapped[str] = mapped_column(
+        String(50), default="Backlog", nullable=False  # "Backlog", "Scheduled", "Auto-Filled", "Submitted", "Failed"
+    )
+    mode: Mapped[str] = mapped_column(
+        String(50), default="Manual", nullable=False  # "Manual", "Assisted", "Autonomous"
+    )
+    tailored_resume_key: Mapped[str | None] = mapped_column(
+        String(255), nullable=True
+    )
+    cover_letter_key: Mapped[str | None] = mapped_column(
+        String(255), nullable=True
+    )
+    tailored_resume_data: Mapped[dict | None] = mapped_column(
+        JSON, nullable=True
+    )
+    tailored_cover_letter_data: Mapped[dict | None] = mapped_column(
+        JSON, nullable=True
+    )
+    date_applied: Mapped[datetime | None] = mapped_column(
+        DateTime, nullable=True
+    )
+    notes: Mapped[str | None] = mapped_column(
+        String(1000), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    job_posting: Mapped["JobPosting"] = relationship("JobPosting", lazy="selectin")
+
+

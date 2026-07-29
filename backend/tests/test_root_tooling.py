@@ -1,6 +1,7 @@
+import json
 import os
 import re
-import json
+
 
 def test_directories_exist():
     """Verify that the core monorepo directories exist."""
@@ -12,14 +13,14 @@ def test_env_example_secrets():
     """Verify .env.example exists and contains no hardcoded secrets."""
     env_path = ".env.example"
     assert os.path.isfile(env_path), ".env.example does not exist"
-    
+
     with open(env_path, "r", encoding="utf-8") as f:
         content = f.read()
-        
+
     # Check for AWS keys, Stripe keys, JWT, Private Keys, or obvious secret assignments
     # AWS Keys pattern: AKIA...
     assert not re.search(r"AKIA[A-Z0-9]{16}", content), "Found hardcoded AWS Access Key in .env.example"
-    
+
     # Check for secret values that don't look like instructions or placeholders
     for line in content.splitlines():
         line = line.strip()
@@ -38,11 +39,11 @@ def test_docker_compose_exists_and_valid():
     """Verify docker-compose.yml exists and has basic structure."""
     compose_path = "docker-compose.yml"
     assert os.path.isfile(compose_path), "docker-compose.yml does not exist"
-    
+
     # Simple check for docker-compose keys
     with open(compose_path, "r", encoding="utf-8") as f:
         content = f.read()
-    
+
     assert "services:" in content, "docker-compose.yml does not contain 'services:' root key"
     assert "postgres:" in content, "docker-compose.yml missing 'postgres' service"
     assert "valkey:" in content, "docker-compose.yml missing 'valkey' service"

@@ -1,12 +1,13 @@
 import logging
 
-from app.domain.auth import User
-from app.infrastructure.db.session import get_db
-from app.services.auth import decode_access_token
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.domain.auth import User
+from app.infrastructure.db.session import get_db
+from app.services.auth import decode_access_token
 
 logger = logging.getLogger("app.api.deps")
 
