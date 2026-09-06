@@ -241,7 +241,9 @@ class AutonomousScheduler:
                 if not profile_dir:
                     profile_dir = str(Path.home() / ".chrome_profiles" / portal)
                 
-                script_path = Path(__file__).parent.parent / "services" / "discovery" / "browser_job_discovery.py"
+                # __file__ = .../app/services/autonomous/scheduler.py
+                # parent.parent = .../app/services/  →  + "discovery" is correct
+                script_path = Path(__file__).parent.parent / "discovery" / "browser_job_discovery.py"
                 
                 # Use xvfb-run for headless execution in server environments
                 import shutil
@@ -267,6 +269,11 @@ class AutonomousScheduler:
                         "jobs_discovered",
                         extra={"portal": portal, "count": len(discovered_jobs)}
                     )
+                else:
+                    logger.warning(
+                        f"job_discovery_subprocess_failed_{portal}",
+                        extra={"returncode": proc.returncode, "stderr": stderr.decode(errors="replace")[:500]}
+                    )
                 
             except NotImplementedError as nie:
                 # This shouldn't happen - log full traceback for debugging
@@ -276,7 +283,7 @@ class AutonomousScheduler:
                     extra={"traceback": traceback.format_exc()}
                 )
             except Exception as e:
-                logger.error(f"job_discovery_failed_{portal}: {e}")
+                logger.error(f"job_discovery_failed_{portal}: {e!r}")
         
         return jobs
     
@@ -313,23 +320,44 @@ class AutonomousScheduler:
                     # In production, fetch job description from URL
                     job_description = await self._fetch_job_description(job["url"])
                 
-                # Tailor resume using AI
-                tailored_result = await tailoring_service.tailor_resume(
-                    master_resume_path=master_resume_path,
-                    job_description=job_description,
+                # Tailor resume using AI (use the underlying Gemini client directly,
+                # since we don't have a DB-backed job_posting_id at this point)
+                from app.services.tailoring.gemini import generate_pdf_resume
+                import tempfile, os
+
+                candidate_info = {
+                    "first_name": user_data.get("first_name", ""),
+                    "last_name": user_data.get("last_name", ""),
+                    "email": user_data.get("email", ""),
+                    "phone": getattr(profile, "phone", "") or "",
+                    "skills": [s.name for s in profile.skills] if profile.skills else [],
+                    "experiences": [
+                        {
+                            "company": exp.company,
+                            "role": exp.role,
+                            "start_date": exp.start_date,
+                            "end_date": exp.end_date,
+                            "description": exp.description,
+                        }
+                        for exp in (profile.experiences or [])
+                    ],
+                }
+
+                resume_data = await tailoring_service.gemini_client.generate_tailored_resume_data(
+                    candidate_info=candidate_info,
                     job_title=job.get("title", ""),
-                    company=job.get("company", ""),
-                    candidate_profile={
-                        "first_name": user_data.get("first_name", ""),
-                        "last_name": user_data.get("last_name", ""),
-                        "email": user_data.get("email", ""),
-                        "skills": [s.name for s in profile.skills] if profile.skills else [],
-                    }
+                    job_company=job.get("company", ""),
+                    job_description=job_description,
                 )
-                
+
+                with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp_out:
+                    tailored_resume_path = tmp_out.name
+
+                generate_pdf_resume(resume_data, tailored_resume_path)
+
                 # Save tailored resume
-                if tailored_result.get("tailored_resume_path"):
-                    return tailored_result["tailored_resume_path"]
+                if os.path.exists(tailored_resume_path):
+                    return tailored_resume_path
                 
         except Exception as e:
             logger.error(f"resume_tailoring_failed: {e}")
