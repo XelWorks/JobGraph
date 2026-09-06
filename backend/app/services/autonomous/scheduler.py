@@ -426,12 +426,14 @@ class AutonomousScheduler:
             if not job_url:
                 return False
             
+            profile = user_data.get("profile")
             profile_data = {
                 "first_name": user_data.get("first_name", "Candidate"),
                 "last_name": user_data.get("last_name", "Applicant"),
                 "email": user_data.get("email", ""),
-                "phone": user_data.get("profile").phone if user_data.get("profile") else "",
-                "skills": [s.name for s in user_data.get("profile").skills] if user_data.get("profile") and user_data["profile"].skills else [],
+                "phone": profile.phone if profile else "",
+                "skills": [s.name for s in profile.skills] if profile and profile.skills else [],
+                "user_id": user_data["user_id"],  # Critical for account creation
             }
             
             # Get portal session

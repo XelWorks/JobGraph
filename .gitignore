@@ -1,3 +1,27 @@
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.class
+*.out
+
+# Dependencies
+.venv/
+venv/
+.env
+.env.local
+.env.*
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Editors
 ﻿# === AIRE SDLC Agentic Framework --- auto-managed (do not edit by hand) ===
 SPEC/
 .github/agents/
@@ -98,6 +122,23 @@ lerna-debug.log*
 !.vscode/settings.json
 !.vscode/launch.json
 .idea/
+
+# Coverage and testing
+.coverage
+coverage/
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Build directories
+dist/
+build/
+target/
+.gradle/
+
+# System files
+.DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
