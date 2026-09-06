@@ -16,8 +16,13 @@ from app.core.config import settings
 from app.infrastructure.db.session import engine
 from app.infrastructure.logging.logger import setup_logging
 from app.infrastructure.storage.minio import storage
+from app.services.autonomous.scheduler import autonomous_scheduler
 
 logger = logging.getLogger("app.main")
+
+# Background task reference
+_scheduler_task: asyncio.Task | None = None
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -61,9 +66,30 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         logger.error(f"infrastructure_bootstrap_failed: {e}")
         # In production, we might want to fail fast here depending on criticality
 
+    # 3. Start autonomous scheduler if enabled
+    global _scheduler_task
+    if settings.autonomous_mode_enabled:
+        _scheduler_task = asyncio.create_task(autonomous_scheduler.start())
+        logger.info("autonomous_scheduler_background_task_started")
+
     yield
-    # Cleanup on shutdown if needed
+    
+    # Cleanup on shutdown
     logger.info("app_shutdown")
+    
+    # Stop autonomous scheduler
+    if _scheduler_task and not _scheduler_task.done():
+        logger.info("stopping_autonomous_scheduler")
+        autonomous_scheduler.running = False
+        try:
+            await asyncio.wait_for(autonomous_scheduler.shutdown(), timeout=5.0)
+        except asyncio.TimeoutError:
+            logger.warning("autonomous_scheduler_shutdown_timeout")
+        _scheduler_task.cancel()
+        try:
+            await _scheduler_task
+        except asyncio.CancelledError:
+            pass
 
 def create_app() -> FastAPI:
     """FastAPI application factory."""

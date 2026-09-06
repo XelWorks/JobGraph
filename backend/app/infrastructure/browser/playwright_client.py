@@ -411,8 +411,64 @@ class PlaywrightBrowserCore:
             result["status"] = "review_required"
             result["requires_manual_review"] = True
             return True
+        
+        # Handle company career pages that redirect from job boards
+        # Try to detect and create account on ATS platforms
+        current_url = page.url
+        ats_detected = self._detect_ats_from_url(current_url)
+        
+        if ats_detected and ats_detected not in {"linkedin", "naukri", "glassdoor"}:
+            # This is a company career page - try account creation
+            from app.services.applications.account_creator import account_creation_service
+            
+            # Get user_id from profile_data or context
+            user_id_str = profile_data.get("user_id")
+            if user_id_str:
+                import uuid
+                try:
+                    user_id = uuid.UUID(user_id_str)
+                    account_created, platform = await account_creation_service.detect_and_create_account(
+                        page=page,
+                        current_url=current_url,
+                        profile_data=profile_data,
+                        user_id=user_id,
+                    )
+                    
+                    if account_created:
+                        logger.info(
+                            "account_created_on_career_page",
+                            extra={"platform": platform, "url": current_url}
+                        )
+                        result["account_created"] = True
+                        result["ats_platform"] = platform
+                        # Continue with standard form filling after account creation
+                        return False  # Don't skip standard ATS handling
+                
+                except (ValueError, TypeError) as e:
+                    logger.warning(f"invalid_user_id_for_account_creation: {e}")
 
         return False
+    
+    def _detect_ats_from_url(self, url: str) -> str | None:
+        """Detect ATS platform from URL."""
+        url_lower = url.lower()
+        if "greenhouse.io" in url_lower:
+            return "greenhouse"
+        if "lever.co" in url_lower:
+            return "lever"
+        if "myworkday.com" in url_lower or "wd5.myworkday.com" in url_lower:
+            return "workday"
+        if "icims.com" in url_lower:
+            return "icims"
+        if "taleo.net" in url_lower or "oraclecloud.com" in url_lower:
+            return "taleo"
+        if "linkedin.com" in url_lower:
+            return "linkedin"
+        if "naukri.com" in url_lower:
+            return "naukri"
+        if "glassdoor.com" in url_lower:
+            return "glassdoor"
+        return None
 
     async def _detect_ats_platform(self, page: Any, url: str) -> str:
         """Heuristic check to determine if the page is Greenhouse or Lever."""
