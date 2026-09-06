@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     structured_logging: bool = True
     
     # Autonomous mode settings
-    autonomous_mode_enabled: bool = True
+    autonomous_mode_enabled: bool = False  # Disabled by default - user must enable via frontend
     max_applications_per_day: int = 50
     application_interval_seconds: int = 300  # 5 minutes between applications
     job_discovery_interval_seconds: int = 1800  # 30 minutes between job scans

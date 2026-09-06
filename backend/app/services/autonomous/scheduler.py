@@ -245,18 +245,21 @@ class AutonomousScheduler:
                 # parent.parent = .../app/services/  →  + "discovery" is correct
                 script_path = Path(__file__).parent.parent / "discovery" / "browser_job_discovery.py"
                 
+                # Use xvfb-run for headless execution in server environments
+                import shutil
+                use_xvfb = shutil.which("xvfb-run") is not None
+                
+                cmd = [sys.executable, str(script_path), portal, profile_dir, query, location]
+                if use_xvfb:
+                    cmd = ["xvfb-run", "-a"] + cmd
+                
                 proc = await asyncio.create_subprocess_exec(
-                    sys.executable,
-                    str(script_path),
-                    portal,
-                    profile_dir,
-                    query,
-                    location,
+                    *cmd,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
                 )
                 
-                stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=60)
+                stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=90)
                 
                 if proc.returncode == 0:
                     result = json.loads(stdout.decode())
@@ -272,6 +275,13 @@ class AutonomousScheduler:
                         extra={"returncode": proc.returncode, "stderr": stderr.decode(errors="replace")[:500]}
                     )
                 
+            except NotImplementedError as nie:
+                # This shouldn't happen - log full traceback for debugging
+                import traceback
+                logger.error(
+                    f"job_discovery_not_implemented_{portal}: {nie}",
+                    extra={"traceback": traceback.format_exc()}
+                )
             except Exception as e:
                 logger.error(f"job_discovery_failed_{portal}: {e!r}")
         
