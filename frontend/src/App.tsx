@@ -7,12 +7,14 @@ import { JobsFeed } from './features/jobs/JobsFeed';
 import { Applications } from './features/applications/Applications';
 import { AccountHub } from './features/vault/AccountHub';
 import { DependencyGraph } from './features/graph/DependencyGraph';
+import { AutonomyControlPanel } from './features/autonomy/AutonomyControlPanel';
 import { useHealthCheck, HealthBadge } from './components/HealthCheck';
 import {
   Settings,
   HelpCircle,
   Bell,
   CheckCircle2,
+  Bot,
 } from 'lucide-react';
 
 const decodeJwt = (jwt: string): { exp?: number } | null => {
@@ -84,6 +86,8 @@ export const App: React.FC = () => {
         return <JobsFeed token={token} />;
       case 'applications':
         return <Applications token={token} />;
+      case 'autonomy':
+        return <AutonomyControlPanel token={token} />;
       case 'settings':
         return (
           <div className="bg-slate-950/20 border border-slate-800/60 rounded-xl p-8 max-w-4xl space-y-6">

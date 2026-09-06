@@ -1,47 +1,37 @@
-```gitignore
+```
+# Dependencies
+node_modules/
+frontend/node_modules/
+
 # Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Logs and temporary files
-*.log
-*.tmp
+# Build artifacts
+dist/
+build/
+*.egg-info/
 
 # Environment files
 .env
 .env.local
 .env.*
 
-# Coverage reports
-.coverage
-coverage/
-htmlcov/
-
-# IDE specific
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Build artifacts
-dist/
-build/
-*.egg-info/
+# Logs
+*.log
 
-# Dependency management
-.venv/
-venv/
-pip-log.txt
-pip-selfcheck.json
+# Temporary files
+*.tmp
 
-# Testing
-.pytest_cache/
-.mypy_cache/
-.hypothesis/
-
-# OS generated files
-.DS_Store
-Thumbs.db
+# Package lock files
+package-lock.json
+.yarn/
 ```
