@@ -22,7 +22,105 @@ venv/
 *.swp
 
 # Editors
+﻿# === AIRE SDLC Agentic Framework --- auto-managed (do not edit by hand) ===
+SPEC/
+.github/agents/
+.github/instructions/
+.github/copilot-instructions.md
+.agent/
+SPEC/agents/
+SPEC/rulebooks/
+SPEC/templates/
+SPEC/workflows/
+# === end AIRE SDLC Agentic Framework ===
+
+# -- Environment & Secrets -----------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+secrets/
+
+# -- Python --------------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+.eggs/
+dist/
+build/
+develop-eggs/
+downloads/
+eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.so
+.installed.cfg
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testing / Coverage
+.coverage
+.coverage.*
+coverage.xml
+coverage/
+htmlcov/
+.pytest_cache/
+.tox/
+nosetests.xml
+test-results/
+
+# Linting / Type checking
+.mypy_cache/
+.dmypy.json
+.ruff_cache/
+.pytype/
+
+# -- Node / TypeScript / Vite --------------------------------------------------
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+.cache/
+**/.cache/
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+
+# -- Docker --------------------------------------------------------------------
+.docker/
+docker-data/
+
+# -- Logs ----------------------------------------------------------------------
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# -- Editors & IDEs ------------------------------------------------------------
 .vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
 .idea/
 
 # Coverage and testing
@@ -41,3 +139,27 @@ target/
 # System files
 .DS_Store
 Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*.tmp
+
+# -- OS ------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -- Project-specific ----------------------------------------------------------
+.postman/
+.skills/
+postman/
+SPEC/
+docs/plans/.parallel/
+browser_profiles/
+tmp_*.py
+_patch_*.py
+_check_*.py
