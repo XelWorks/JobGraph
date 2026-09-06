@@ -1,5 +1,6 @@
 import json
 import logging
+import asyncio
 from typing import Any, Dict
 
 import httpx
@@ -99,19 +100,29 @@ Your response must be a single, valid JSON object conforming exactly to this JSO
 
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.post(self.api_url, json=payload, timeout=30.0)
+                for attempt in range(2):
+                    response = await client.post(self.api_url, json=payload, timeout=30.0)
+                    if response.status_code == 200:
+                        resp_json = response.json()
+                        candidate_text = resp_json["candidates"][0]["content"]["parts"][0]["text"]
+                        return json.loads(candidate_text)
 
-                if response.status_code != 200:
-                    logger.error(f"Gemini API returned error: status_code={response.status_code}, body={response.text}")
-                    raise RuntimeError(f"Gemini API error (Status {response.status_code})")
+                    if response.status_code not in {429, 500, 502, 503, 504}:
+                        raise RuntimeError(f"Gemini API error (Status {response.status_code})")
 
-                resp_json = response.json()
-                candidate_text = resp_json["candidates"][0]["content"]["parts"][0]["text"]
-                return json.loads(candidate_text)
+                    logger.warning(
+                        "gemini_resume_transient_error",
+                        extra={"status_code": response.status_code, "attempt": attempt + 1},
+                    )
+                    if attempt == 0:
+                        await asyncio.sleep(1)
+
+            logger.warning("gemini_resume_unavailable_using_local_fallback")
+            return self._get_mock_tailored_data(candidate_info, job_title, job_company)
 
         except httpx.HTTPError as e:
             logger.error(f"Gemini API request failed due to connectivity issues: {e}")
-            raise RuntimeError("Gemini API connection timeout or limit reached.") from e
+            return self._get_mock_tailored_data(candidate_info, job_title, job_company)
         except (KeyError, IndexError, json.JSONDecodeError) as e:
             logger.error(f"Failed to parse structured Gemini output: {e}")
             return self._get_mock_tailored_data(candidate_info, job_title, job_company)
@@ -226,19 +237,29 @@ Your response must be a single, valid JSON object conforming exactly to this JSO
 
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.post(self.api_url, json=payload, timeout=30.0)
+                for attempt in range(2):
+                    response = await client.post(self.api_url, json=payload, timeout=30.0)
+                    if response.status_code == 200:
+                        resp_json = response.json()
+                        candidate_text = resp_json["candidates"][0]["content"]["parts"][0]["text"]
+                        return json.loads(candidate_text)
 
-                if response.status_code != 200:
-                    logger.error(f"Gemini API returned error: status_code={response.status_code}, body={response.text}")
-                    raise RuntimeError(f"Gemini API error (Status {response.status_code})")
+                    if response.status_code not in {429, 500, 502, 503, 504}:
+                        raise RuntimeError(f"Gemini API error (Status {response.status_code})")
 
-                resp_json = response.json()
-                candidate_text = resp_json["candidates"][0]["content"]["parts"][0]["text"]
-                return json.loads(candidate_text)
+                    logger.warning(
+                        "gemini_cover_letter_transient_error",
+                        extra={"status_code": response.status_code, "attempt": attempt + 1},
+                    )
+                    if attempt == 0:
+                        await asyncio.sleep(1)
+
+            logger.warning("gemini_cover_letter_unavailable_using_local_fallback")
+            return self._get_mock_cover_letter_data(candidate_info, job_title, job_company)
 
         except httpx.HTTPError as e:
             logger.error(f"Gemini API request failed due to connectivity issues: {e}")
-            raise RuntimeError("Gemini API connection timeout or limit reached.") from e
+            return self._get_mock_cover_letter_data(candidate_info, job_title, job_company)
         except (KeyError, IndexError, json.JSONDecodeError) as e:
             logger.error(f"Failed to parse structured Gemini cover letter output: {e}")
             return self._get_mock_cover_letter_data(candidate_info, job_title, job_company)

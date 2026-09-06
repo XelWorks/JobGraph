@@ -133,7 +133,7 @@ graph TD
 | 12 | 5.4 | Final integration (E2E submission integration test) |
 | 13 | 7.1, 8.1 | Session Vault API & Unified Connector SDK |
 | 14 | 7.2, 7.3 | Account Hub UI & Vault Integration Test |
-| 15 | 8.2, 8.3 | Browser Profile UI & Connector SDK Test |
+| 15 | 8.2, 8.3, 8.4 | Browser Profile UI, Connector SDK Test, and Portal Coverage |
 | 16 | 9.1, 9.2 | Standalone Worker & Event System |
 | 17 | 9.3, 9.4 | Worker Control UI & Worker Queue Test |
 | 18 | 10.1, 10.2 | Interactive Takeover & Job Replay Timeline UI |
@@ -322,6 +322,10 @@ Build the Browser Profile Manager UI for inspecting Chromium browser sessions, c
 ### Story 8.3: Connector & Browser Profile Integration Test
 **Developer**: Dev 1  
 Verify the Unified Connector SDK contracts and browser profile session lifecycle in an integration test.
+
+### Story 8.4: LinkedIn, Naukri & Glassdoor Portal Connectors and Safe Auto-Apply Runtime
+**Developer**: Dev 1  
+Implement real portal connectors for LinkedIn, Naukri, and Glassdoor, restore session-vault browser state, and add safe automation gates, challenge takeover, and application validation needed for user-driven auto-apply workflows.
 
 ---
 

@@ -13,13 +13,100 @@ SPEC/templates/
 SPEC/workflows/
 # === end AIRE SDLC Agentic Framework ===
 
+# ── Environment & Secrets ──────────────────────────────────────────────────────
 .env
-.env.local
-.venv
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+secrets/
+
+# ── Python ─────────────────────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+pip-log.txt
+pip-delete-this-directory.txt
+.Python
+
+# Testing / Coverage
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.pytest_cache/
+.tox/
+nosetests.xml
+test-results/
+
+# Linting / Type checking
+.mypy_cache/
+.dmypy.json
+.ruff_cache/
+.pytype/
+
+# ── Node / TypeScript / Vite ───────────────────────────────────────────────────
 node_modules/
 **/node_modules/
 dist/
 **/dist/
+build/
+**/build/
+.cache/
+**/.cache/
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+
+# ── Docker ─────────────────────────────────────────────────────────────────────
+.docker/
+docker-data/
+
+# ── Logs ───────────────────────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ── Editors & IDEs ─────────────────────────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+
+# ── OS ─────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Misc project ───────────────────────────────────────────────────────────────
 docs/plans/.parallel/
-*__pycache__
-*.pyc
+browser_profiles/
+tmp_*.py
+_patch_*.py
+_check_*.py
+
+postman/*
+.postman/
+.skills/

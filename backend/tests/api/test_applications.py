@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from app.domain.auth import User
@@ -151,6 +152,75 @@ async def test_applications_tracking_api(auth_headers):
         from sqlalchemy import delete
         await session.execute(delete(Application).where(Application.id == app_id))
         await session.execute(delete(MatchScore).where(MatchScore.job_posting_id == job_id))
+        await session.execute(delete(JobPosting).where(JobPosting.id == job_id))
+        await session.execute(delete(User).where(User.id == user_id))
+        await session.commit()
+
+
+@pytest.mark.asyncio
+async def test_dispatch_application_queue_uses_tailored_resume(auth_headers):
+    headers, email = auth_headers
+    user_id = None
+    job_id = uuid.uuid4()
+    app_id = uuid.uuid4()
+
+    async with SessionLocal() as session:
+        from sqlalchemy import select
+        user = (await session.execute(select(User).where(User.email == email))).scalar_one()
+        user_id = user.id
+
+        job = JobPosting(
+            id=job_id,
+            platform="Greenhouse",
+            external_job_id="dispatch-123",
+            board_token="dispatch-board",
+            title="Platform Engineer",
+            company="Dispatch Co",
+            location="Remote",
+            url="https://boards.greenhouse.io/dispatch-board/jobs/123",
+            description_text="Build distributed systems",
+        )
+        session.add(job)
+        await session.flush()
+
+        application = Application(
+            id=app_id,
+            user_id=user_id,
+            job_posting_id=job_id,
+            status="Scheduled",
+            mode="Autonomous",
+            tailored_resume_key="resumes/test-tailored.pdf",
+        )
+        session.add(application)
+        await session.commit()
+
+    with patch("app.infrastructure.queue.valkey_queue.AsyncRedis") as MockAsyncRedis, patch(
+        "app.infrastructure.storage.minio.storage.get_object_bytes",
+        return_value=b"%PDF-1.4\nmock resume",
+    ):
+        mock_client = AsyncMock()
+        mock_client.rpush = AsyncMock()
+        MockAsyncRedis.from_url.return_value = mock_client
+
+        with TestClient(app) as client:
+            response = client.post(
+                f"/api/v1/applications/{app_id}/dispatch",
+                json={
+                    "job_url": "https://boards.greenhouse.io/dispatch-board/jobs/123",
+                    "profile_data": {"first_name": "Dispatch", "last_name": "Tester"},
+                    "mode": "Autonomous",
+                    "portal_name": "greenhouse",
+                },
+                headers=headers,
+            )
+
+        assert response.status_code == 202
+        assert response.json()["status"] == "queued"
+        assert mock_client.rpush.await_count == 1
+
+    async with SessionLocal() as session:
+        from sqlalchemy import delete
+        await session.execute(delete(Application).where(Application.id == app_id))
         await session.execute(delete(JobPosting).where(JobPosting.id == job_id))
         await session.execute(delete(User).where(User.id == user_id))
         await session.commit()

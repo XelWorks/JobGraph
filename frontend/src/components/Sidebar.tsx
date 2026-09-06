@@ -8,7 +8,9 @@ import {
   LogOut,
   Menu,
   X,
-  Compass
+  Compass,
+  Shield,
+  GitBranch,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -25,6 +27,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentSection, onSectionChang
     { id: 'profile', label: 'Profile', icon: User },
     { id: 'discovery', label: 'Job discovery', icon: Search },
     { id: 'applications', label: 'Applications', icon: Briefcase },
+    { id: 'vault', label: 'Account Hub', icon: Shield },
+    { id: 'dependency-graph', label: 'Dependency Graph', icon: GitBranch },
     { id: 'settings', label: 'Settings', icon: SettingsIcon },
   ];
 

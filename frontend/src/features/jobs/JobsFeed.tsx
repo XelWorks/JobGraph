@@ -110,23 +110,41 @@ export const JobsFeed: React.FC<JobsFeedProps> = ({ token }) => {
   const [tailoringJobs, setTailoringJobs] = useState<Record<string, 'idle' | 'running' | 'done'>>({});
 
   // Active Tailor Panel Workspace states
-  const [activeTailorJob, setActiveTailorJob] = useState<{ id: string; title: string; company: string } | null>(null);
+  const [activeTailorJob, setActiveTailorJob] = useState<{ id: string; title: string; company: string; url: string } | null>(null);
   const [tailorData, setTailorData] = useState<TailorDetailResponse | null>(null);
 
   const meta = import.meta as unknown as { env?: { VITE_API_URL?: string } };
   const apiUrl = meta.env?.VITE_API_URL || 'http://localhost:8000';
 
-  const fetchJobs = useCallback(async () => {
+  const fetchJobs = useCallback(async (runDiscovery = false) => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetch(`${apiUrl}/api/v1/jobs?include_archived=true`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      if (!response.ok) {
+
+      if (!response.ok && response.status !== 404) {
         throw new Error('Failed to retrieve discovered job postings.');
       }
-      const data = await response.json();
+
+      let data = response.ok ? await response.json() : [];
+      if (runDiscovery) {
+        const discoverResponse = await fetch(`${apiUrl}/api/v1/jobs/discover`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (discoverResponse.ok) {
+          data = await discoverResponse.json();
+        } else if (!Array.isArray(data) || data.length === 0) {
+          throw new Error('Discovery pipeline did not return any jobs.');
+        }
+      }
+
       setJobs(data);
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : 'An error occurred while loading jobs.';
@@ -182,7 +200,7 @@ export const JobsFeed: React.FC<JobsFeedProps> = ({ token }) => {
       if (getResponse.ok) {
         const existingData = await getResponse.json();
         setTailorData(existingData);
-        setActiveTailorJob({ id: jobId, title: jobTitle, company: companyName });
+        setActiveTailorJob({ id: jobId, title: jobTitle, company: companyName, url: jobs.find((job) => job.id === jobId)?.url || '' });
         setTailoringJobs((prev) => ({ ...prev, [jobId]: 'done' }));
         return;
       }
@@ -204,7 +222,7 @@ export const JobsFeed: React.FC<JobsFeedProps> = ({ token }) => {
 
       const freshData = await triggerResponse.json();
       setTailorData(freshData);
-      setActiveTailorJob({ id: jobId, title: jobTitle, company: companyName });
+      setActiveTailorJob({ id: jobId, title: jobTitle, company: companyName, url: jobs.find((job) => job.id === jobId)?.url || '' });
       setTailoringJobs((prev) => ({ ...prev, [jobId]: 'done' }));
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : 'An error occurred during tailoring.';
@@ -238,14 +256,23 @@ export const JobsFeed: React.FC<JobsFeedProps> = ({ token }) => {
             <p className="text-xs text-slate-500">Live feed of automatically discovered job postings and their match alignment scores</p>
           </div>
         </div>
+        <div className="flex items-center gap-2">
         <button
-          onClick={fetchJobs}
+          onClick={() => fetchJobs(true)}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-950/40 hover:bg-slate-900 border border-slate-800 hover:border-slate-700/80 rounded-xl text-xs font-semibold text-sky-400 hover:text-sky-300 transition-all focus:outline-none disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 rounded-xl text-xs font-semibold text-sky-400 hover:text-sky-300 transition-all focus:outline-none disabled:opacity-50"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
+          Discover Jobs
+        </button>
+        <button
+          onClick={() => fetchJobs(false)}
+          disabled={loading}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-950/40 hover:bg-slate-900 border border-slate-800 hover:border-slate-700/80 rounded-xl text-xs font-semibold text-slate-300 hover:text-slate-200 transition-all focus:outline-none disabled:opacity-50"
+        >
           Refresh Feed
         </button>
+        </div>
       </div>
 
       {/* Filter / Controls Bar */}
@@ -438,7 +465,7 @@ export const JobsFeed: React.FC<JobsFeedProps> = ({ token }) => {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => handleStartTailoring(job.id, job.title, job.company)}
-                      disabled={tailorState === 'running' || isArchived}
+                      disabled={tailorState === 'running'}
                       className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition-all focus:outline-none ${
                         tailorState === 'running'
                           ? 'bg-sky-500/15 text-sky-400 border border-sky-500/30'
@@ -489,6 +516,28 @@ export const JobsFeed: React.FC<JobsFeedProps> = ({ token }) => {
           jobTitle={activeTailorJob.title}
           companyName={activeTailorJob.company}
           data={tailorData}
+          onApply={async () => {
+            const response = await fetch(`${apiUrl}/api/v1/applications/${tailorData.application_id}/dispatch`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                job_url: activeTailorJob.url,
+                mode: tailorData.mode || 'Autonomous',
+                portal_name: null,
+                requires_review: false,
+              }),
+            });
+            const detail = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              throw new Error(detail.detail || 'Failed to queue the browser application.');
+            }
+            alert('Application queued. The browser worker will open the portal and continue the application.');
+            setActiveTailorJob(null);
+            setTailorData(null);
+          }}
           onClose={() => {
             setActiveTailorJob(null);
             setTailorData(null);

@@ -1,5 +1,6 @@
 import logging
 import uuid
+from datetime import datetime
 
 from app.domain.job import Application
 from sqlalchemy import select
@@ -55,9 +56,11 @@ class ApplicationRepository:
         cover_letter_key: str | None = None,
         status: str | None = None,
         resume_data: dict | None = None,
-        cover_letter_data: dict | None = None
+        cover_letter_data: dict | None = None,
+        notes: str | None = None,
+        date_applied: datetime | None = None,
     ) -> Application:
-        """Update the resume key, cover letter key, status, or raw tailored data of an application."""
+        """Update application tracking details including status, notes, and submission timestamps."""
         application = await self.get_by_id(db, app_id)
         if not application:
             raise ValueError(f"Application with ID {app_id} does not exist.")
@@ -72,6 +75,10 @@ class ApplicationRepository:
             application.tailored_resume_data = resume_data
         if cover_letter_data is not None:
             application.tailored_cover_letter_data = cover_letter_data
+        if notes is not None:
+            application.notes = notes
+        if date_applied is not None:
+            application.date_applied = date_applied
 
         await db.commit()
         query = select(Application).where(Application.id == application.id)

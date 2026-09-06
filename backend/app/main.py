@@ -1,7 +1,11 @@
 import asyncio
 import logging
+import sys
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
+
+if sys.platform == "win32" and hasattr(asyncio, "WindowsProactorEventLoopPolicy"):
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,10 +39,22 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         from app.domain.auth import User  # noqa
         from app.domain.profile import UserProfile, Skill, Experience  # noqa
         from app.domain.job import JobPosting, MatchScore, Application  # noqa
+        from app.domain.vault import SessionVault  # noqa
         from app.infrastructure.db.session import Base
 
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
+            await conn.execute(text("""
+                DO $$
+                BEGIN
+                    ALTER TABLE IF EXISTS session_vault
+                        ALTER COLUMN last_verified_at TYPE TIMESTAMPTZ USING last_verified_at AT TIME ZONE 'UTC',
+                        ALTER COLUMN created_at TYPE TIMESTAMPTZ USING created_at AT TIME ZONE 'UTC',
+                        ALTER COLUMN updated_at TYPE TIMESTAMPTZ USING updated_at AT TIME ZONE 'UTC';
+                EXCEPTION WHEN undefined_column THEN
+                    NULL;
+                END $$;
+            """))
 
         await storage.bootstrap()
     except Exception as e:

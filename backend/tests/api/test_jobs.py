@@ -50,6 +50,34 @@ async def test_list_jobs_empty(auth_headers):
         assert response.json() == []
 
 @pytest.mark.asyncio
+async def test_discover_jobs_populates_feed(auth_headers):
+    async with SessionLocal() as session:
+        from sqlalchemy import delete
+        await session.execute(delete(MatchScore))
+        await session.execute(delete(JobPosting))
+        await session.commit()
+
+    with TestClient(app) as client:
+        save_resp = client.post(
+            "/api/v1/vault",
+            json={
+                "portal_name": "Greenhouse",
+                "session_payload": '{"portal":"greenhouse","cookies":[],"captured_at":"browser_popup_login"}',
+                "status": "Healthy",
+            },
+            headers=auth_headers,
+        )
+        assert save_resp.status_code == 201
+
+        response = client.post("/api/v1/jobs/discover", headers=auth_headers)
+        assert response.status_code == 200
+        payload = response.json()
+        assert len(payload) >= 1
+        assert all("title" in job for job in payload)
+        assert all(job["platform"].lower() == "greenhouse" for job in payload)
+
+
+@pytest.mark.asyncio
 async def test_list_jobs_with_scores(auth_headers):
     """Verify listing jobs returns populated list, with archiving logic working as expected."""
     async with SessionLocal() as session:
@@ -85,7 +113,7 @@ async def test_list_jobs_with_scores(auth_headers):
         )
         session.add(score_active)
 
-        # 2. Create an archived job (score under 70)
+        # 2. Create an archived job on a portal that is also connected for the user
         job_archived = JobPosting(
             id=uuid.uuid4(),
             platform="Lever",
@@ -118,6 +146,28 @@ async def test_list_jobs_with_scores(auth_headers):
 
     try:
         with TestClient(app) as client:
+            save_resp = client.post(
+                "/api/v1/vault",
+                json={
+                    "portal_name": "Greenhouse",
+                    "session_payload": '{"portal":"greenhouse","cookies":[],"captured_at":"browser_popup_login"}',
+                    "status": "Healthy",
+                },
+                headers=auth_headers,
+            )
+            assert save_resp.status_code == 201
+
+            save_resp_lever = client.post(
+                "/api/v1/vault",
+                json={
+                    "portal_name": "Lever",
+                    "session_payload": '{"portal":"lever","cookies":[],"captured_at":"browser_popup_login"}',
+                    "status": "Healthy",
+                },
+                headers=auth_headers,
+            )
+            assert save_resp_lever.status_code == 201
+
             # Test default: should not include archived jobs
             response = client.get("/api/v1/jobs", headers=auth_headers)
             assert response.status_code == 200

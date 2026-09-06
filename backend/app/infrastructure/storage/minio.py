@@ -59,4 +59,16 @@ class MinioStorage:
             logger.error(f"Failed to generate pre-signed URL for {object_name}: {e}")
             raise
 
+    def get_object_bytes(self, object_name: str) -> bytes:
+        """Fetch an object from MinIO and return its bytes for local browser submission."""
+        try:
+            response = self.client.get_object(self.bucket_name, object_name)
+            data = response.read()
+            response.close()
+            response.release_conn()
+            return data
+        except S3Error as e:
+            logger.error(f"Failed to read object {object_name} from MinIO: {e}")
+            raise
+
 storage = MinioStorage()

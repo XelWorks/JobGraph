@@ -5,6 +5,8 @@ import { Profile } from './features/profiles/Profile';
 import { AuthForm } from './features/auth/AuthForm';
 import { JobsFeed } from './features/jobs/JobsFeed';
 import { Applications } from './features/applications/Applications';
+import { AccountHub } from './features/vault/AccountHub';
+import { DependencyGraph } from './features/graph/DependencyGraph';
 import { useHealthCheck, HealthBadge } from './components/HealthCheck';
 import {
   Settings,
@@ -12,6 +14,18 @@ import {
   Bell,
   CheckCircle2,
 } from 'lucide-react';
+
+const decodeJwt = (jwt: string): { exp?: number } | null => {
+  try {
+    const payload = jwt.split('.')[1];
+    if (!payload) return null;
+    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=');
+    return JSON.parse(atob(padded)) as { exp?: number };
+  } catch {
+    return null;
+  }
+};
 
 export const App: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -22,9 +36,26 @@ export const App: React.FC = () => {
   useEffect(() => {
     const savedToken = localStorage.getItem('jobgraph_jwt');
     if (savedToken) {
+      const payload = decodeJwt(savedToken);
+      const isExpired = payload && typeof payload.exp === 'number' && payload.exp * 1000 <= Date.now();
+      if (isExpired) {
+        localStorage.removeItem('jobgraph_jwt');
+        setToken(null);
+        return;
+      }
       setToken(savedToken);
     }
   }, []);
+
+  useEffect(() => {
+    if (!token) return;
+
+    const payload = decodeJwt(token);
+    const isExpired = payload && typeof payload.exp === 'number' && payload.exp * 1000 <= Date.now();
+    if (isExpired) {
+      handleLogOut();
+    }
+  }, [token]);
 
   const handleAuthSuccess = (jwtToken: string) => {
     localStorage.setItem('jobgraph_jwt', jwtToken);
@@ -82,6 +113,10 @@ export const App: React.FC = () => {
             </div>
           </div>
         );
+      case 'vault':
+        return <AccountHub token={token} />;
+      case 'dependency-graph':
+        return <DependencyGraph token={token} />;
       default:
         return <Dashboard health={health} />;
     }

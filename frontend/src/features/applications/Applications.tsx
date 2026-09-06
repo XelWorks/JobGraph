@@ -6,7 +6,8 @@ import {
   Sparkles,
   AlertCircle,
   Clock,
-  RefreshCw
+  RefreshCw,
+  Link
 } from 'lucide-react';
 import { TrackingTable, ApplicationRecord } from './TrackingTable';
 
@@ -36,6 +37,8 @@ export const Applications: React.FC<ApplicationsProps> = ({ token }) => {
   const [loading, setLoading] = useState(true);
   const [updatingAppId, setUpdatingAppId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [jobUrl, setJobUrl] = useState('');
+  const [startingFromLink, setStartingFromLink] = useState(false);
 
   const meta = import.meta as unknown as { env?: { VITE_API_URL?: string } };
   const apiUrl = meta.env?.VITE_API_URL || 'http://localhost:8000';
@@ -99,22 +102,64 @@ export const Applications: React.FC<ApplicationsProps> = ({ token }) => {
   const handleTriggerSubmission = async (appId: string, mode: string) => {
     setUpdatingAppId(appId);
     try {
-      // Set to in-progress loading state
-      if (mode === 'Manual') {
-        // Direct update status to Submitted
-        await handleUpdateStatus(appId, 'Submitted', 'Candidate completed application manually.');
-        return;
+      const app = applications.find((item) => item.id === appId);
+      if (!app) {
+        throw new Error('Application record not found.');
       }
 
-      // Assisted or Autonomous trigger (Mock submission success)
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      
-      await handleUpdateStatus(appId, 'Submitted', `Autofilled and submitted successfully via automated ${mode} mode.`);
+      const dispatchResp = await fetch(`${apiUrl}/api/v1/applications/${appId}/dispatch`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          job_url: app.job_posting.url,
+          resume_path: null,
+          profile_data: {},
+          mode,
+          browser: 'chrome',
+          requires_review: false,
+        })
+      });
+
+      if (!dispatchResp.ok) {
+        const detail = await dispatchResp.json().catch(() => ({}));
+        throw new Error(detail.detail || 'Failed to dispatch browser automation task.');
+      }
+
+      await fetchApplicationsData();
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : 'Automation error occurred.';
       alert(errMsg);
     } finally {
       setUpdatingAppId(null);
+    }
+  };
+
+  const handleStartFromLink = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!jobUrl.trim()) return;
+
+    setStartingFromLink(true);
+    setError(null);
+    try {
+      const response = await fetch(`${apiUrl}/api/v1/applications/from-link`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ job_url: jobUrl.trim(), mode: 'Autonomous' }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.detail || 'Could not start the application.');
+      setJobUrl('');
+      await fetchApplicationsData();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Could not start the application.');
+    } finally {
+      setStartingFromLink(false);
     }
   };
 
@@ -138,6 +183,28 @@ export const Applications: React.FC<ApplicationsProps> = ({ token }) => {
           Refresh Stats
         </button>
       </div>
+
+      <form onSubmit={handleStartFromLink} className="flex flex-col sm:flex-row gap-3 bg-slate-950/20 border border-slate-800/60 rounded-2xl p-4">
+        <div className="flex items-center gap-2 flex-1 bg-slate-900/60 border border-slate-800 rounded-xl px-3">
+          <Link className="h-4 w-4 text-slate-500 shrink-0" />
+          <input
+            type="url"
+            required
+            value={jobUrl}
+            onChange={(event) => setJobUrl(event.target.value)}
+            placeholder="Paste a job application URL"
+            className="w-full bg-transparent py-2.5 text-sm text-slate-200 outline-none placeholder:text-slate-600"
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={startingFromLink || !jobUrl.trim()}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-500/15 text-sky-400 border border-sky-500/30 rounded-xl text-sm font-semibold hover:bg-sky-500/25 disabled:opacity-50"
+        >
+          {startingFromLink ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Link className="h-4 w-4" />}
+          Start Application
+        </button>
+      </form>
 
       {/* Aggregate Metrics Bar Charts */}
       {!loading && !error && (

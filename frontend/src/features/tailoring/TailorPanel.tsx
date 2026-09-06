@@ -5,7 +5,9 @@ import {
   Sparkles,
   FileText,
   CheckCircle,
-  ChevronRight
+  ChevronRight,
+  Play,
+  Loader
 } from 'lucide-react';
 
 interface ExperienceItemOriginal {
@@ -56,6 +58,7 @@ interface TailorPanelProps {
   jobTitle: string;
   companyName: string;
   data: TailorDetailResponse;
+  onApply: () => Promise<void>;
   onClose: () => void;
 }
 
@@ -63,9 +66,11 @@ export const TailorPanel: React.FC<TailorPanelProps> = ({
   jobTitle,
   companyName,
   data,
+  onApply,
   onClose
 }) => {
   const [activeTab, setActiveSection] = React.useState<'resume' | 'cover-letter'>('resume');
+  const [applying, setApplying] = React.useState(false);
 
   const handleDownload = (url: string | null, label: string) => {
     if (!url) {
@@ -75,6 +80,15 @@ export const TailorPanel: React.FC<TailorPanelProps> = ({
     // Print secure download generation success logs
     console.log(`[JobGraph Client] Secure pre-signed download URL generated for ${label}: ${url}`);
     window.open(url, '_blank');
+  };
+
+  const handleApply = async () => {
+    setApplying(true);
+    try {
+      await onApply();
+    } finally {
+      setApplying(false);
+    }
   };
 
   return (
@@ -152,6 +166,14 @@ export const TailorPanel: React.FC<TailorPanelProps> = ({
                 <Download className="h-3.5 w-3.5" /> Download Cover Letter PDF
               </button>
             )}
+            <button
+              onClick={handleApply}
+              disabled={applying || !data.tailored_resume_url}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 rounded-lg text-xs font-bold transition-all disabled:opacity-50"
+            >
+              {applying ? <Loader className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5 fill-current" />}
+              Apply Now
+            </button>
           </div>
         </div>
 
