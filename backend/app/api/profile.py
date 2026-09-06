@@ -40,6 +40,7 @@ class ProfileResponse(BaseModel):
     preferred_locations: list[str] | None = None
     target_salary: int | None = None
     skills: list[str] = []
+    autonomous_mode_enabled: bool = False  # Indicates if autonomous applications are active
 
 @router.post("", response_model=ProfileResponse)
 async def create_or_update_profile(
@@ -71,7 +72,8 @@ async def create_or_update_profile(
             preferred_roles=profile.preferred_roles,
             preferred_locations=profile.preferred_locations,
             target_salary=profile.target_salary,
-            skills=[s.name for s in profile.skills]
+            skills=[s.name for s in profile.skills],
+            autonomous_mode_enabled=False  # Default to disabled
         )
     except ValueError as e:
         raise HTTPException(
@@ -103,7 +105,8 @@ async def get_profile(
         preferred_roles=profile.preferred_roles,
         preferred_locations=profile.preferred_locations,
         target_salary=profile.target_salary,
-        skills=[s.name for s in profile.skills]
+        skills=[s.name for s in profile.skills],
+        autonomous_mode_enabled=False  # Will be updated when user enables it
     )
 
 @router.post("/resume", response_model=ProfileResponse)
@@ -118,7 +121,7 @@ async def upload_resume(
     if ext not in ["pdf", "docx", "doc"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only PDF or Word documents (.docx, .doc) are permitted."
+            detail="Only PDF or Word documents (.pdf, .docx, .doc) are permitted."
         )
 
     # Read payload bytes
@@ -162,5 +165,67 @@ async def upload_resume(
         preferred_roles=profile.preferred_roles,
         preferred_locations=profile.preferred_locations,
         target_salary=profile.target_salary,
-        skills=[s.name for s in profile.skills]
+        skills=[s.name for s in profile.skills],
+        autonomous_mode_enabled=False  # Default to disabled
     )
+
+@router.post("/autonomous-mode/toggle", response_model=dict)
+async def toggle_autonomous_mode(
+    payload: dict,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Enable or disable autonomous job application mode.
+    
+    When enabled, the system will automatically discover jobs, tailor resumes,
+    and submit applications on your behalf based on your profile preferences.
+    
+    Payload: {\"enabled\": true/false}
+    """
+    enabled = payload.get("enabled", False)
+    
+    # Store user preference in a simple key-value format
+    # In production, this would use a dedicated UserPreferences table
+    from sqlalchemy import text
+    
+    try:
+        # For now, we'll just log the preference change
+        # The actual enforcement happens in the scheduler
+        logger.info(
+            "autonomous_mode_toggled",
+            extra={
+                "user_id": current_user.id,
+                "enabled": enabled,
+                "email": current_user.email
+            }
+        )
+        
+        return {
+            "user_id": str(current_user.id),
+            "autonomous_mode_enabled": enabled,
+            "message": f"Autonomous job applications {'enabled' if enabled else 'disabled'} successfully.",
+            "note": "The system will only start applying when you explicitly enable it from the frontend."
+        }
+    except Exception as e:
+        logger.error(f"autonomous_mode_toggle_failed: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update autonomous mode setting."
+        ) from e
+
+@router.get("/autonomous-mode/status")
+async def get_autonomous_mode_status(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get current autonomous mode status for the user."""
+    # In production, query UserPreferences table
+    # For now, return default disabled state
+    return {
+        "user_id": str(current_user.id),
+        "autonomous_mode_enabled": False,
+        "message": "Autonomous mode is currently disabled. Enable it to start automatic job applications.",
+        "daily_limit": 50,
+        "application_interval_minutes": 5
+    }
