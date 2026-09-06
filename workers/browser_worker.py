@@ -158,6 +158,28 @@ class BrowserWorker:
             )
             return
 
+        # Ensure user_id is available for account creation on career pages
+        if "user_id" not in profile_data and application_id:
+            try:
+                from sqlalchemy import select
+                from app.domain.job import Application
+                async with SessionLocal() as session:
+                    result = await session.execute(
+                        select(Application).where(Application.id == application_id)
+                    )
+                    app_record = result.scalar_one_or_none()
+                    if app_record and app_record.user_id:
+                        profile_data["user_id"] = str(app_record.user_id)
+                        logger.info(
+                            "user_id_retrieved_for_account_creation",
+                            extra={"application_id": application_id}
+                        )
+            except Exception as e:
+                logger.warning(
+                    "failed_to_retrieve_user_id",
+                    extra={"application_id": application_id, "error": str(e)}
+                )
+
         logger.info(
             "task_execution_started",
             extra={

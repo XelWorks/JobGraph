@@ -28,7 +28,7 @@ from app.infrastructure.db.application_repository import application_repository
 from app.infrastructure.db.vault_repository import vault_repository, decrypt_payload
 from app.services.applications.application_service import application_service
 from app.services.discovery.browser_job_discovery import search_url
-from app.services.tailoring.service import tailoring_service
+from app.services.tailoring.service import tailoring_pipeline_service as tailoring_service
 from app.services.automation.events import event_bus, ApplicationStarted, StatusSaved
 
 logger = logging.getLogger("app.services.autonomous.scheduler")
@@ -398,12 +398,14 @@ class AutonomousScheduler:
             if not job_url:
                 return False
             
+            profile = user_data.get("profile")
             profile_data = {
                 "first_name": user_data.get("first_name", "Candidate"),
                 "last_name": user_data.get("last_name", "Applicant"),
                 "email": user_data.get("email", ""),
-                "phone": user_data.get("profile").phone if user_data.get("profile") else "",
-                "skills": [s.name for s in user_data.get("profile").skills] if user_data.get("profile") and user_data["profile"].skills else [],
+                "phone": profile.phone if profile else "",
+                "skills": [s.name for s in profile.skills] if profile and profile.skills else [],
+                "user_id": user_data["user_id"],  # Critical for account creation
             }
             
             # Get portal session
